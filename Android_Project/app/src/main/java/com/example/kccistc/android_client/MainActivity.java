@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         et = findViewById(R.id.tx_log);
         et.setText("ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ");
         btn_start = findViewById(R.id.btn_start);
+
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,12 +70,23 @@ public class MainActivity extends AppCompatActivity {
 //                    }catch (Exception e){e.printStackTrace();}
 //                }
                 try {
-                    setSocket(default_ip, default_Port,et);
-                }catch (Exception e){e.printStackTrace();}
+                    socket = new Socket(default_ip,default_Port);
+                    networkWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    networkReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                } catch (IOException e) {
+                    et.setText(e.getMessage());
+                    System.out.println(e);
+                    e.printStackTrace();
+                }
 
                 checkUpdate.start();
             }
         });
+
+        try {
+            setSocket(default_ip, default_Port,et);
+        }catch (Exception e){e.printStackTrace();}
+        checkUpdate.start();
 
         btn_reset = findViewById(R.id.btn_clear);
         btn_reset.setOnClickListener(new View.OnClickListener() {
