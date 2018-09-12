@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.logging.Handler;
+import android.os.Handler;
 
 public class clientSocket extends Thread {
     private Socket client_scok;
@@ -25,12 +25,16 @@ public class clientSocket extends Thread {
     private boolean mConnected = false;
     private Handler mHandler = null;
 
-    static class MessageTypeClass {
+
+
+    public static class MessageTypeClass {
         public static final int SIMSOCK_CONNECTED = 1;
         public static final int SIMSOCK_DATA = 2;
         public static final int SIMSOCK_DISCONNECTED = 3;
     };
+
     public enum MessageType { SIMSOCK_CONNECTED, SIMSOCK_DATA, SIMSOCK_DISCONNECTED };
+
 
     public clientSocket(String addr, int port, Handler handler){
         this.mAddr = addr;
