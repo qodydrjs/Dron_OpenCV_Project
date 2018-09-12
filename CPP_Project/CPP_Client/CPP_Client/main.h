@@ -18,9 +18,9 @@ using std::endl;
 #include <string>
 #include <stdexcept>
 
-#define SERVER_PORT 5001
+#define SERVER_PORT 5000
 #define BUF_SIZE 1024
 #define QUEUE_SIZE 10
-#define IPAddress "192.168.1.61"
+#define IPAddress "192.168.1.65"
 
 #endif // !CLIENT_MAIN_H
