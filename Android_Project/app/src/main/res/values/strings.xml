@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">android_client</string>
+    <string name="app_name">클라이언트</string>
     <string name="title_home">접속</string>
     <string name="title_dashboard">스트리밍</string>
     <string name="title_notifications">설정</string>
