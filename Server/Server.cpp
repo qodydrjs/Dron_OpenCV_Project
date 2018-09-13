@@ -3,15 +3,22 @@
 #include <stdlib.h>
 #include <WinSock2.h>
 #include <windows.h>
-#include <string>
 #include <thread>
+#include <string>
+#include <process.h>
+
+#define BUF_SIZE 100
+#define MAX_CLNT 256
 
 #define SERVER_PORT 5000
 
 void ErrorHandling(const char *message);
-void*  recv_msg(SOCKET* arg);
-void*  send_msg(SOCKET* arg);
+unsigned WINAPI HandleClnt(void *arg);
+void SendMsg(char *msg, int len);
 
+int clntCnt = 0;
+SOCKET clntSocks[MAX_CLNT];
+HANDLE hMutex;
 
 int main(int argc, char *argv[])
 {
@@ -20,24 +27,26 @@ int main(int argc, char *argv[])
 	SOCKET hServSock, hClntSock;
 	SOCKADDR_IN servAddr, clntAddr;
 
-	int szClntAddr;
-	char message[] = "Hello World!";
-	/*if (argc != 2)
+	int clntAdrSz;
+	HANDLE hThread;
 
+	/*if (argc != 2)
 	{
-		printf("Usage:%s <port>\n", argv[0]);
-		exit(1);
+	printf("Usage:%s <port>\n", argv[0]);
+	exit(1);
 	}*/
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) //소켓 라이브러리 초기화
-		 ErrorHandling("WSAStartup() error!");
-		//std::cout << "WSAStartup() error!" << std::endl;
+		ErrorHandling("WSAStartup() error!");
 
+
+	hMutex = CreateMutex(NULL, FALSE, NULL);
+	//hServSock = socket(AF_INET, SOCK_STREAM, 0); //소켓생성 //(AF_INET, SOCK_STREAM, 0)
 	hServSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); //소켓생성 //(AF_INET, SOCK_STREAM, 0)
 
 	if (hServSock == INVALID_SOCKET)
 		ErrorHandling("socket() error");
-		//std::cout << "socket() error" << std::endl;
+
 
 	memset(&servAddr, 0, sizeof(servAddr));
 	servAddr.sin_family = AF_INET;
@@ -47,36 +56,45 @@ int main(int argc, char *argv[])
 
 	if (bind(hServSock, (SOCKADDR*)&servAddr, sizeof(servAddr)) == SOCKET_ERROR) //소켓에 IP주소와 PORT 번호 할당
 		ErrorHandling("bind() error");
-		//std::cout << "bind() error" << std::endl;
+
 
 	if (listen(hServSock, 5) == SOCKET_ERROR) //listen 함수호출을 통해서 생성한 소켓을 서버 소켓으로 완성
 		ErrorHandling("listen() error");
-		//std::cout << "listen() error" << std::endl;
-	while (1) 
+
+	while (1)
 	{
-		szClntAddr = sizeof(clntAddr);
-		hClntSock = accept(hServSock, (SOCKADDR*)&clntAddr, &szClntAddr); //클라이언트 연결요청 수락하기 위해 accept함수 호출
+		clntAdrSz = sizeof(clntAddr);
+		hClntSock = accept(hServSock, (SOCKADDR*)&clntAddr, &clntAdrSz); //클라이언트 연결요청 수락하기 위해 accept함수 호출
 
 		if (hClntSock == INVALID_SOCKET)
 			ErrorHandling("accept() error");
-		//std::cout << "accept() error" << std::endl;
+		std::cout << "accept()" << std::endl;
 
-		send(hClntSock, message, sizeof(message), 0); //send함수 호출을 통해서 연결된 클라이언트에 데이터를 전송
-		
-		std::thread t1(recv_msg, &hClntSock);
-		std::thread t2(send_msg, &hClntSock);
-		t1.join();
 
-		
-		
-		
+		WaitForSingleObject(hMutex, INFINITE);
+		clntSocks[clntCnt++] = hClntSock;
+		ReleaseMutex(hMutex);
+
+		//hThread = (std::thread)_beginthreadex(NULL, 0, HandleClnt, (void *)&hClntSock, 0, NULL);
+		hThread = (HANDLE)_beginthreadex(NULL, 0, HandleClnt, (void *)&hClntSock, 0, NULL);
+		printf("Connected client IP: %s \n", inet_ntoa(clntAddr.sin_addr));
+
+
+
+		//send(hClntSock, message, sizeof(message), 0); //send함수 호출을 통해서 연결된 클라이언트에 데이터를 전송
+
+		//std::thread t1(send_msg1, &hClntSock);
+		//std::thread t2(send_msg, &hClntSock);
+
+		//t1.join();
+
 	}
-		closesocket(hClntSock);
-		closesocket(hServSock);
-		WSACleanup(); //프로그램 종료 전에 초기화한 소켓 라이브러리 해제
 
-		return 0;
-	
+	closesocket(hServSock);
+	WSACleanup(); //프로그램 종료 전에 초기화한 소켓 라이브러리 해제
+
+	return 0;
+
 }
 
 void ErrorHandling(const char *message)
@@ -86,63 +104,36 @@ void ErrorHandling(const char *message)
 	exit(1);
 
 }
+unsigned WINAPI HandleClnt(void * arg) {
+	SOCKET hClntSock = *((SOCKET*)arg);
+	int strLen = 0, i;
+	char msg[BUF_SIZE];
 
-void * recv_msg(SOCKET* arg)
-{
+	while ((strLen = recv(hClntSock, msg, sizeof(msg), 0)) != 0)
+		SendMsg(msg, strLen);
 
-	SOCKET* sock = reinterpret_cast<SOCKET*>(arg);
-	int str_len = 0;
-	char buf[50] = { 0, };
-	std::string sRand;
-
-	while (1)
+	WaitForSingleObject(hMutex, INFINITE);
+	for (i = 0; i < clntCnt; i++)
 	{
-		if ((str_len = recv(*sock, buf, 50, 0)) > 0)
+		if (hClntSock == clntSocks[i])
 		{
-			buf[str_len] = 0; // make a string
-			sRand = buf;
-			std::cout << "Sending \"" << sRand << " to client" << std::endl;
+			while (i++ < clntCnt - 1)
+				clntSocks[i] = clntSocks[i + 1];
+			break;
 		}
 	}
+	clntCnt--;
+	ReleaseMutex(hMutex);
+	closesocket(hClntSock);
 	return 0;
-}
 
-void * send_msg(SOCKET * arg)
+}
+void SendMsg(char * msg, int len)
 {
-	SOCKET* sock = reinterpret_cast<SOCKET*>(arg);
-	int ret;
-	struct timeval tv;
-	fd_set initset, newset;
-	FD_ZERO(&initset);
-	FD_SET(_fileno(stdin), &initset);
-
-	char buf[50] = { 0, };
-	fputs("Input a Message! \n ", stdout);
-	while (1)
-	{
-		for (int i = 0; i < 50; i++)
-			buf[i] = 0;
-		tv.tv_sec = 1;
-		tv.tv_usec = 0;
-		newset = initset;
-		ret = select(_fileno(stdin) + 1, &newset, NULL, NULL, &tv);
-		//__WSAFDIsSet(_fileno(stdin), &newset)
-		//FD_ISSET(_fileno(stdin), &newset)
-		if (__WSAFDIsSet(_fileno(stdin), &newset))
-		{
-			fgets(buf, 50, stdin);
-			if (!strncmp(buf, "quit\n", 5))
-			{
-				*sock = -1;
-				return NULL;
-			}
-			if ((send(*sock, buf, strlen(buf), 0)) <= 0)
-			{
-				*sock = -1;
-				return NULL;
-			}
-		}
-	}
-
-	return nullptr;
+	int i;
+	WaitForSingleObject(hMutex, INFINITE);
+	for (i = 0; i < clntCnt; i++)
+		send(clntSocks[i], msg, len, 0);
+	ReleaseMutex(hMutex);
 }
+
