@@ -1,6 +1,7 @@
 package com.example.kccistc.android_client;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -11,6 +12,7 @@ public class Client {
     private Socket socket;
     private OutputStream socketOutput;
     private BufferedReader socketInput;
+    private ByteArrayOutputStream socktInputBuffer;
 
     private String ip;
     private int port;
@@ -30,7 +32,7 @@ public class Client {
                 try {
                     socket.connect(socketAddress);
                     socketOutput = socket.getOutputStream();
-                    socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream(),"EUC_KR"));
 
                     new ReceiveThread().start();
 
@@ -45,7 +47,6 @@ public class Client {
     }
 
 
-
     public void disconnect()throws Exception{
         try {
             socket.close();
@@ -57,7 +58,7 @@ public class Client {
 
     public void send(String message){
         try {
-            socketOutput.write(message.getBytes());
+            socketOutput.write(message.getBytes("EUC-KR"));
         } catch (IOException e) {
             if(listener!=null)
                 listener.onDisconnect(socket, e.getMessage());
@@ -69,8 +70,9 @@ public class Client {
             String message;
             try {
                 while((message = socketInput.readLine()) != null) {   // each line must end with a \n to be received
-                    if(listener!=null)
+                    if(listener!=null) {
                         listener.onMessage(message);
+                    }
                 }
             } catch (IOException e) {
                 if(listener!=null)
