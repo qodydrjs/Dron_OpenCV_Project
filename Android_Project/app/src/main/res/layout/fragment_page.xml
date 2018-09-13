@@ -94,6 +94,16 @@
             android:scaleType="center"/>
 
 
+        <EditText
+            android:id="@+id/ed_sendMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:ems="13"
+            android:hint="메세지를 입력하세요"
+            android:inputType="textPersonName"
+            />
+
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/text_view"
             android:layout_width="match_parent"

@@ -1,6 +1,7 @@
 package com.example.kccistc.android_client;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +14,8 @@ public class Client {
     private OutputStream socketOutput;
     private BufferedReader socketInput;
     private ByteArrayOutputStream socktInputBuffer;
+    private ByteArrayInputStream in;
+
 
     private String ip;
     private int port;
@@ -71,6 +74,7 @@ public class Client {
             try {
                 while((message = socketInput.readLine()) != null) {   // each line must end with a \n to be received
                     if(listener!=null) {
+                        //in.read(message.getBytes());
                         listener.onMessage(message);
                     }
                 }

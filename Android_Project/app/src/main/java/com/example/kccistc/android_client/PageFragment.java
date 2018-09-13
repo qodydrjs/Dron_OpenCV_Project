@@ -1,16 +1,22 @@
 package com.example.kccistc.android_client;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.ByteArrayInputStream;
 import java.net.Socket;
 
 /**
@@ -25,9 +31,9 @@ public class PageFragment extends Fragment {
     private int default_Port = 5001;
     //Member
     private TextView et;
-    private EditText ip, port;
+    private EditText ip, port,et_sendMessage;
     private Button btn_start,btn_reset,btn_send;
-
+    private ImageView imageView;
     private Client socket2;
 
     private View views;
@@ -56,12 +62,32 @@ public class PageFragment extends Fragment {
         // viewPager.setAdapter(getSupportFragmentManager());
         et = views.findViewById(R.id.tx_log);
         btn_start = views.findViewById(R.id.btn_start);
+        et_sendMessage = views.findViewById(R.id.ed_sendMessage);
+        et_sendMessage.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                try {
+                    Log.d("SimpleSocket", ""+keyCode);
+                    if (keyCode == 66) {
+                        EditText et_msg = (EditText) v;
+                        String msg = et_msg.getText().toString();
+                        if(msg.length() > 0) {
+                            socket2.send(msg);
+                            et_msg.setText("");
+                        }
+                    }
+                }catch (Exception e){e.printStackTrace();}
+
+                return false;
+            }
+        });
+
 
         ///메세지 SEND 핸들러..
         final Handler getMessageHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                et.setText("Message 받음"+msg.getData().get("msg"));
+                et.setText("Message 받음 : "+msg.getData().get("msg"));
             }
         };
 
@@ -76,8 +102,10 @@ public class PageFragment extends Fragment {
                 try {
                     if (ip.getText().toString().length() > 5 && port.getText().toString().length() > 2) {
                         socket2 = new Client(ip.getText().toString(), Integer.parseInt(port.getText().toString()));
+                        setClientCallback(socket2, getMessageHandler);
                     } else {
                         socket2 = new Client(default_ip, default_Port);
+                        setClientCallback(socket2, getMessageHandler);
                     }
                     if (!socket2.equals(null)) {
                         setClientCallback(socket2, getMessageHandler);
@@ -108,7 +136,18 @@ public class PageFragment extends Fragment {
                         Bundle b = new Bundle();
                         b.putString("msg",message);
                         msg.setData(b);
+
+                        imageView = views.findViewById(R.id.imageView);
+                        try {
+                            ByteArrayInputStream ins =null;
+                            ins.read(message.getBytes());
+
+                        Bitmap bitmap = BitmapFactory.decodeStream(ins);
+
+                        //views;
                         getMessageHandler.sendMessage(msg);
+                        }catch (Exception e){}
+
                     }
                 }).start();
             }
