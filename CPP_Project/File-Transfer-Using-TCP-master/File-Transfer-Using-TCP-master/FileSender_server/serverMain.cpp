@@ -5,6 +5,7 @@
 #include "serverMain.h"
 #include "Client.h"
 #include "File.h"
+#include <iostream>
 
 extern File file;
 void WINAPI dataSending(LPVOID);
@@ -30,7 +31,7 @@ void server::startServer() {
 	mainSock.setSockOptions();
 
 	// 소켓을 대기상태로 설정한다.
-	int retval = listen(mainSock.sock, 3);
+	int retval = listen(mainSock.sock, 0);
 	if (retval == SOCKET_ERROR) {
 		errorPrint("Socket Listen Error");
 	}
@@ -46,19 +47,22 @@ void server::startFileTransfer() {
 	clients clnt;
 	clients* pclnt;
 	int retval;
-
-	// 파일 이름 전송
-	char fnm[_MAX_FILE_LENGTH] = { NULL };
-	strcpy(fnm, file.getFileName());
-	retval = send(clnt.nameSock.sock, fnm, sizeof(fnm), 0);
-	
-	// 파일 크기 전송
+	//
+	retval = send(clnt.nameSock.sock, "#i", sizeof("#i"), 0);
+	std::cout << "Read : " << retval << std::endl;
+	//// 파일 이름 전송
+	//char fnm[_MAX_FILE_LENGTH] = { NULL };
+	//strcpy(fnm, file.getFileName());
+	//retval = send(clnt.nameSock.sock, fnm, sizeof(fnm), 0);
+	//std::cout << "Read : " << retval << std::endl;
+	//
+	//// 파일 크기 전송
 	unsigned int fsz = file.getFileSize();
 	retval = send(clnt.sizeSock.sock, (char*)&fsz, sizeof(fsz), 0);
-
+	std::cout << "Read : " << fsz << std::endl;
 	// 파일 데이터 전송
 	pclnt = &clnt;
-	puts("File Data Sending Start");
+	puts("file data sending start");
 	clnt.hDataThread = CreateThread
 	(
 		NULL,
@@ -70,7 +74,13 @@ void server::startFileTransfer() {
 	);
 	WaitForSingleObject(pclnt->hDataThread, INFINITE);
 
-	puts("File Sengind Finish");
+
+	std::cout << "Read : " << retval << std::endl;
+	//image end flag
+	//retval = send(clnt.nameSock.sock, "$i", sizeof("$i"), 0);
+	std::cout << "Read : " << retval << std::endl;
+
+	puts("File Sengind Finish !!!!!!!!!!!!");
 	shutdown(pclnt->dataSock.sock, SD_SEND);
 
 	chkFileTransfer(pclnt->dataSock.sock);

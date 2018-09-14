@@ -87,7 +87,9 @@ public class PageFragment extends Fragment {
         final Handler getMessageHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                et.setText("Message 받음 : "+msg.getData().get("msg"));
+                byte[] data = msg.getData().getByteArray("msg");
+                ((ImageView) views.findViewById(R.id.imageView)).setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                et.append(msg.getData().get("msg") +"\r\n");
             }
         };
 
@@ -127,24 +129,25 @@ public class PageFragment extends Fragment {
     private void setClientCallback(final Client c_socket,final Handler getMessageHandler){
         c_socket.setClientCallback(new Client.ClientCallback () {
             @Override
-            public void onMessage(final String message) {
+            public void onMessage(final byte[] message) {
                 //Main UI 쓰레드에서 처리 해야하므로 생성 다른 쓰레드에서 View 변경시 오류.
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Message msg = getMessageHandler.obtainMessage();
                         Bundle b = new Bundle();
-                        b.putString("msg",message);
+                        b.putByteArray("msg",message);
+                        //b.putByte("msg",message);
                         msg.setData(b);
 
-                        imageView = views.findViewById(R.id.imageView);
+                        //imageView = views.findViewById(R.id.imageView);
                         try {
-                            ByteArrayInputStream ins =null;
-                            ins.read(message.getBytes());
+                          //  ByteArrayInputStream ins =null;
+                            //ins.read(message);
 
-                        Bitmap bitmap = BitmapFactory.decodeStream(ins);
+                       // Bitmap bitmap = BitmapFactory.decodeStream(ins);
 
-                        imageView.setImageBitmap(bitmap);
+                       // imageView.setImageBitmap(bitmap);
                         getMessageHandler.sendMessage(msg);
                         }catch (Exception e){}
 

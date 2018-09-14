@@ -19,7 +19,7 @@
 #include <tchar.h>
 
 #define BUFSIZE 65536
-#define PORT 9090
+#define PORT 5000
 
 #define _MAX_FILE_LENGTH 256
 #define _MAX_PATH_LENGTH 1024
