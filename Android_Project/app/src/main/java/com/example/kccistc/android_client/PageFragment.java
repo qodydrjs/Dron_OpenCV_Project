@@ -1,5 +1,6 @@
 package com.example.kccistc.android_client;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -62,6 +63,7 @@ public class PageFragment extends Fragment {
         // viewPager.setAdapter(getSupportFragmentManager());
         et = views.findViewById(R.id.tx_log);
         btn_start = views.findViewById(R.id.btn_start);
+        imageView = views.findViewById(R.id.imageView);
         et_sendMessage = views.findViewById(R.id.ed_sendMessage);
         et_sendMessage.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -84,12 +86,20 @@ public class PageFragment extends Fragment {
 
 
         ///메세지 SEND 핸들러..
-        final Handler getMessageHandler = new Handler(){
+        @SuppressLint("HandlerLeak") final Handler getMessageHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 byte[] data = msg.getData().getByteArray("msg");
-                ((ImageView) views.findViewById(R.id.imageView)).setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                et.append(msg.getData().get("msg") +"\r\n");
+                Log.d("bitmap",""+data.length);
+                Bitmap bitmap = null;
+                bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
+                imageView.setImageBitmap(bitmap);
+                //BitmapFactory.Options opt = new BitmapFactory.Options();
+              //  opt.inDither = true;
+                //opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
+               // ((ImageView) views.findViewById(R.id.imageView)).setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+               // ((ImageView) views.findViewById(R.id.imageView)).setImageDrawable(BitmapFactory.decodeByteArray(data, 0, data.length));
+              //  et.append(msg.getData().get("msg") +"\r\n");
             }
         };
 

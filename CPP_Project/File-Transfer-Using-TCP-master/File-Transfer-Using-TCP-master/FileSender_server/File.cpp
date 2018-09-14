@@ -21,9 +21,9 @@ void File::setFileSize(int fSize) {
 }
 
 HANDLE File::loadFile() {
-	HANDLE hd = CreateFile
+	HANDLE hd = CreateFileA
 	(
-		TEXT(getFileName()),   // 파일명
+		"bike.bmp",   // 파일명
 		GENERIC_READ,   // 읽기
 		0,
 		NULL,

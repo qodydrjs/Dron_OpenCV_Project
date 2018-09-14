@@ -23,7 +23,7 @@ public class Client {
 
     private Socket socket;
     private OutputStream socketOutput;
-    private BufferedReader socketInput;
+ //   private BufferedReader socketInput;
     private BufferedInputStream socketInputStream;
 //    private ByteArrayOutputStream socktInputBuffer;
 //    private ByteArrayInputStream socketBytein;
@@ -51,7 +51,7 @@ public class Client {
                 try {
                     socket.connect(socketAddress);
                     socketOutput = socket.getOutputStream();
-                    //socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
+                   // socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
                     socketInputStream = new BufferedInputStream(socket.getInputStream());
                     new ReceiveThread().start();
 
@@ -94,51 +94,66 @@ public class Client {
             try {
                 while(mRun) {
 
-                    synchronized (this) {
+                   // synchronized (this) {
                         while ((read = socketInputStream.read(buffer)) >0 && mRun) {
                             sizebuffer = new byte[read];
                             System.arraycopy(buffer, 0, sizebuffer, 0, read);
-
+//                            if(count++ < 3)
+                            Log.d("sda : ",  new String(sizebuffer));
                             if(new String(sizebuffer).equals("#i\0")){
                                 isImage = true;
                                 Log.d("#i : ",  "::#i ");
                             }else if(!isSize && isImage && imagebuffer == null){
-                                size = 41070;
+                                //size = 41070;
+                                //size = 450054;
+                                //size = 81045;
+                                size = 20382;
                                 imagebuffer = new byte[0];
                                 isSize = true;
                             }else if(isSize && (imagebuffer!=null)){
                                 if(imagebuffer.length == 0) {
-                                    preimagebuffer = sizebuffer.clone();
-                                    imagebuffer = new byte[preimagebuffer.length];
-                                    Log.d("size11 : ",  "::size " + preimagebuffer.length);
-                                    Log.d("size12 : ",  "::size " + read);
-
-
+                                   // preimagebuffer = sizebuffer.clone();
+                                    imagebuffer = new byte[sizebuffer.length];
+                                  //  Log.d("size11 : ",  "::size " + sizebuffer.length);
+                                   // Log.d("size12 : ",  "::size " + read);
+                                    for(int i=0; i<sizebuffer.length; i++){
+                                        imagebuffer[i] = sizebuffer[i];
+                                        Log.d("images",""+imagebuffer[i]);
+                                    }
                                 }
                                 else{
                                     preimagebuffer = imagebuffer.clone();
                                     imagebuffer = new byte[read + preimagebuffer.length];
-                                    Log.d("size1 : ",  "::size " + preimagebuffer.length);
-                                    Log.d("size2 : ",  "::size " + read);
-                                    Log.d("size3 : ",  "::size " + size);
-
-
+                                    //Log.d("size1 : ",  "::size " + preimagebuffer.length);
+                                    //Log.d("size2 : ",  "::size " + read);
+                                    //Log.d("size3 : ",  "::size " + size);
+                                    for(int i=0; i<preimagebuffer.length; i++){
+                                        imagebuffer[i] = preimagebuffer[i];
+                                    }
+                                    int good=0;
+                                    for(int i=preimagebuffer.length-1; i<read; i++){
+                                        imagebuffer[i] = sizebuffer[good++];
+                                        Log.d("images",""+sizebuffer[good-1]);
+                                    }
                                 }
 
+                         //   }
+                                if(imagebuffer != null)
+                            if(imagebuffer.length >=size){
+//                                Log.d("image : ",  "::image " + new String(imagebuffer) +"len : "+ imagebuffer.length);
+//                                Log.d("image : ",  "len : "+ imagebuffer.length);
+                                listener.onMessage(imagebuffer);
+                                //Log.d("size3 : ",  "::size " + size);
+                                isImage = false;
+                                isSize = false;
+                                imagebuffer=null;
+                                sizebuffer=null;
+                                preimagebuffer=null;
                             }
 
 
-//                            if(imagebuffer.length >=size){
-////                                Log.d("image : ",  "::image " + new String(imagebuffer) +"len : "+ imagebuffer.length);
-////                                Log.d("image : ",  "len : "+ imagebuffer.length);
-////                                listener.onMessage(imagebuffer);
-//                                //Log.d("size3 : ",  "::size " + size);
-//                            }
-
-//                            imagebuffer=null;
-//                            sizebuffer=null;
-//                            preimagebuffer=null;
                             buffer = new byte[buff_size];
+
                             //
 
                         }
@@ -175,5 +190,9 @@ public class Client {
         void onConnect(Socket socket);
         void onDisconnect(Socket socket, String message);
         void onConnectError(Socket socket, String message);
+    }
+
+    private void BinarySerch(){
+
     }
 }
