@@ -144,7 +144,7 @@ public class PageFragment extends Fragment {
 
                         Bitmap bitmap = BitmapFactory.decodeStream(ins);
 
-                        //views;
+                        imageView.setImageBitmap(bitmap);
                         getMessageHandler.sendMessage(msg);
                         }catch (Exception e){}
 
