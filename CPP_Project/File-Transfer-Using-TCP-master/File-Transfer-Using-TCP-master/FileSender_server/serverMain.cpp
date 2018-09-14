@@ -57,6 +57,7 @@ void server::startFileTransfer() {
 	//std::cout << "Read : " << retval << std::endl;
 	//
 	//// 파일 크기 전송
+
 	unsigned int fsz = file.getFileSize();
 	retval = send(clnt.sizeSock.sock, (char*)&fsz, sizeof(fsz), 0);
 	std::cout << "Read : " << fsz << std::endl;
@@ -79,11 +80,12 @@ void server::startFileTransfer() {
 	//image end flag
 	//retval = send(clnt.nameSock.sock, "$i", sizeof("$i"), 0);
 	std::cout << "Read : " << retval << std::endl;
-
+	//int a;
+	//std::cin >> a;
 	puts("File Sengind Finish !!!!!!!!!!!!");
-	shutdown(pclnt->dataSock.sock, SD_SEND);
+	//shutdown(pclnt->dataSock.sock, SD_SEND);
 
-	chkFileTransfer(pclnt->dataSock.sock);
+	//chkFileTransfer(pclnt->dataSock.sock);
 }
 
 void server::chkFileTransfer(SOCKET dataSock) {

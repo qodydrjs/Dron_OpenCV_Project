@@ -15,9 +15,11 @@ import java.net.Socket;
 public class Client {
     private static int count = 1;
     private static boolean isImage = false;
+    private static boolean isSize = false;
     private static byte[] imagebuffer;
     private static byte[] sizebuffer;
     private static byte[] preimagebuffer;
+    private static int size;
 
     private Socket socket;
     private OutputStream socketOutput;
@@ -91,36 +93,47 @@ public class Client {
             int read;
             try {
                 while(mRun) {
-                    int size =0;
+
                     synchronized (this) {
-                        while ((read = socketInputStream.read(buffer)) != -1 && mRun) {
+                        while ((read = socketInputStream.read(buffer)) >0 && mRun) {
                             sizebuffer = new byte[read];
                             System.arraycopy(buffer, 0, sizebuffer, 0, read);
-                          // Log.d("byte : ", "" + read + " " + new String(sizebuffer) + " c : "+count++);
+
                             if(new String(sizebuffer).equals("#i\0")){
-                               // Log.d("byte : ",  "::::: " + new String(sizebuffer));
-                               // Log.d("byte : ",  "::::: " + (imagebuffer==null) );
                                 isImage = true;
-                            }else if(isImage && imagebuffer == null){
+                                Log.d("#i : ",  "::#i ");
+                            }else if(!isSize && isImage && imagebuffer == null){
                                 size = 41070;
-                                imagebuffer = new byte[read];
-//                                Log.d("size : ",  "::size " + sizebuffer[0]);
-//                                Log.d("size : ",  "::size " + sizebuffer[1]);
-//                                Log.d("size : ",  "::size " + sizebuffer[2]);
-//                                Log.d("size : ",  "::size " + sizebuffer[3]);
-                            }else if(isImage && !(imagebuffer==null)){
-                                preimagebuffer = sizebuffer.clone();
-                                imagebuffer = new byte[read + preimagebuffer.length];
-                                System.arraycopy(preimagebuffer,0,imagebuffer,0,preimagebuffer.length);
-                                //Log.d("size11 : ",  "::size " + size);
+                                imagebuffer = new byte[0];
+                                isSize = true;
+                            }else if(isSize && (imagebuffer!=null)){
+                                if(imagebuffer.length == 0) {
+                                    preimagebuffer = sizebuffer.clone();
+                                    imagebuffer = new byte[preimagebuffer.length];
+                                    Log.d("size11 : ",  "::size " + preimagebuffer.length);
+                                    Log.d("size12 : ",  "::size " + read);
+
+
+                                }
+                                else{
+                                    preimagebuffer = imagebuffer.clone();
+                                    imagebuffer = new byte[read + preimagebuffer.length];
+                                    Log.d("size1 : ",  "::size " + preimagebuffer.length);
+                                    Log.d("size2 : ",  "::size " + read);
+                                    Log.d("size3 : ",  "::size " + size);
+
+
+                                }
+
                             }
 
 
-                            if(imagebuffer.length >=size){
-                                Log.d("image : ",  "::image " + new String(imagebuffer) +"len : "+ imagebuffer.length);
-                                Log.d("image : ",  "len : "+ imagebuffer.length);
-                                listener.onMessage(imagebuffer);
-                            }
+//                            if(imagebuffer.length >=size){
+////                                Log.d("image : ",  "::image " + new String(imagebuffer) +"len : "+ imagebuffer.length);
+////                                Log.d("image : ",  "len : "+ imagebuffer.length);
+////                                listener.onMessage(imagebuffer);
+//                                //Log.d("size3 : ",  "::size " + size);
+//                            }
 
 //                            imagebuffer=null;
 //                            sizebuffer=null;
@@ -134,6 +147,8 @@ public class Client {
             } catch (Exception e) {
                 if(listener!=null)
                     listener.onDisconnect(socket, e.getMessage());
+                e.printStackTrace();
+                Log.d("error : ",  "::erroe "+e.getMessage());
             }
         }
     }
@@ -152,7 +167,7 @@ public class Client {
     }
 
     public void removeClientCallback(){
-       // this.listener=null;
+        // this.listener=null;
     }
 
     public interface ClientCallback {
