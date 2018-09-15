@@ -23,7 +23,7 @@ public class Client {
 
     private Socket socket;
     private OutputStream socketOutput;
- //   private BufferedReader socketInput;
+   // private BufferedReader socketInput;
     private BufferedInputStream socketInputStream;
 //    private ByteArrayOutputStream socktInputBuffer;
 //    private ByteArrayInputStream socketBytein;
@@ -104,10 +104,10 @@ public class Client {
                                 isImage = true;
                                 Log.d("#i : ",  "::#i ");
                             }else if(!isSize && isImage && imagebuffer == null){
-                                //size = 41070;
+                                size = 41070;
                                 //size = 450054;
                                 //size = 81045;
-                                size = 20382;
+                                //size = 20382;
                                 imagebuffer = new byte[0];
                                 isSize = true;
                             }else if(isSize && (imagebuffer!=null)){
@@ -118,7 +118,7 @@ public class Client {
                                    // Log.d("size12 : ",  "::size " + read);
                                     for(int i=0; i<sizebuffer.length; i++){
                                         imagebuffer[i] = sizebuffer[i];
-                                        Log.d("images",""+imagebuffer[i]);
+                                     //   Log.d("images",""+imagebuffer[i]);
                                     }
                                 }
                                 else{
@@ -133,7 +133,7 @@ public class Client {
                                     int good=0;
                                     for(int i=preimagebuffer.length-1; i<read; i++){
                                         imagebuffer[i] = sizebuffer[good++];
-                                        Log.d("images",""+sizebuffer[good-1]);
+                                     //   Log.d("images",""+sizebuffer[good-1]);
                                     }
                                 }
 
@@ -141,7 +141,7 @@ public class Client {
                                 if(imagebuffer != null)
                             if(imagebuffer.length >=size){
 //                                Log.d("image : ",  "::image " + new String(imagebuffer) +"len : "+ imagebuffer.length);
-//                                Log.d("image : ",  "len : "+ imagebuffer.length);
+                                Log.d("image!!!!!! : ",  "len : "+ imagebuffer.length);
                                 listener.onMessage(imagebuffer);
                                 //Log.d("size3 : ",  "::size " + size);
                                 isImage = false;

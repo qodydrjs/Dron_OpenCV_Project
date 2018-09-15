@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.net.Socket;
 
 /**
@@ -38,6 +39,7 @@ public class PageFragment extends Fragment {
     private Client socket2;
 
     private View views;
+    private FileOutputStream openFileOutput;
 
     public static PageFragment newInstance(int pageNo) {
 
@@ -89,11 +91,18 @@ public class PageFragment extends Fragment {
         @SuppressLint("HandlerLeak") final Handler getMessageHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                byte[] data = msg.getData().getByteArray("msg");
-                Log.d("bitmap",""+data.length);
-                Bitmap bitmap = null;
-                bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
-                imageView.setImageBitmap(bitmap);
+                try {
+                    //openFileOutput =
+
+                    byte[] data = msg.getData().getByteArray("msg");
+                    Log.d("bitmap", "" + data.length);
+                    //byte[] datas = new String(data).getBytes();
+                    // Log.d("bitmap",""+new String(datas));
+                    // Log.d("bitmap",""+datas.length);
+                    Bitmap bitmap = null;
+                    bitmap = BitmapFactory.decodeByteArray(new String(data).getBytes("EUC-KR"), 0, data.length);
+                    imageView.setImageBitmap(bitmap);
+                }catch (Exception e){e.printStackTrace();}
                 //BitmapFactory.Options opt = new BitmapFactory.Options();
               //  opt.inDither = true;
                 //opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
