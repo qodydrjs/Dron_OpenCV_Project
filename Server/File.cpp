@@ -23,7 +23,7 @@ void File::setFileSize(int fSize) {
 HANDLE File::loadFile() {
 	HANDLE hd = CreateFile
 	(
-		"C:\\project\\Dron_OpenCV_Project\\Server\\Debug\\bike.bmp",   // 파일명
+		"C:\\image\\flower.bmp",   // 파일명
 		GENERIC_READ,   // 읽기
 		0,
 		NULL,

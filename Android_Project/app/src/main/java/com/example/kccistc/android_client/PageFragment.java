@@ -1,8 +1,10 @@
 package com.example.kccistc.android_client;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.Socket;
 
@@ -92,16 +96,21 @@ public class PageFragment extends Fragment {
             @Override
             public void handleMessage(Message msg) {
                 try {
-                    //openFileOutput =
-
                     byte[] data = msg.getData().getByteArray("msg");
-                    Log.d("bitmap", "" + data.length);
-                    //byte[] datas = new String(data).getBytes();
-                    // Log.d("bitmap",""+new String(datas));
-                    // Log.d("bitmap",""+datas.length);
+                    System.out.println(getContext().getFilesDir());
+                    File file = new File(getContext().getFilesDir(),"bike.bmp");
+                    FileOutputStream outputStream;
+                    try{
+                        outputStream = new FileOutputStream(file);
+                        outputStream.write(data);
+                        outputStream.close();
+
+                    }catch (Exception e){e.printStackTrace();}
                     Bitmap bitmap = null;
-                    bitmap = BitmapFactory.decodeByteArray(new String(data).getBytes("EUC-KR"), 0, data.length);
+                    bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                     imageView.setImageBitmap(bitmap);
+
+                    //imageView.setImageDrawable("");
                 }catch (Exception e){e.printStackTrace();}
                 //BitmapFactory.Options opt = new BitmapFactory.Options();
               //  opt.inDither = true;

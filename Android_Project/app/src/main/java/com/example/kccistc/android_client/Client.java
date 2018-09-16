@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 public class Client {
     private static int count = 1;
@@ -53,6 +54,7 @@ public class Client {
                     socketOutput = socket.getOutputStream();
                    // socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
                     socketInputStream = new BufferedInputStream(socket.getInputStream());
+                  //  ByteBuffer b = new
                     new ReceiveThread().start();
 
                     if(listener!=null)
@@ -93,72 +95,53 @@ public class Client {
             int read;
             try {
                 while(mRun) {
-
                    // synchronized (this) {
-                        while ((read = socketInputStream.read(buffer)) >0 && mRun) {
-                            sizebuffer = new byte[read];
-                            System.arraycopy(buffer, 0, sizebuffer, 0, read);
-//                            if(count++ < 3)
-                            Log.d("sda : ",  new String(sizebuffer));
-                            if(new String(sizebuffer).equals("#i\0")){
-                                isImage = true;
-                                Log.d("#i : ",  "::#i ");
-                            }else if(!isSize && isImage && imagebuffer == null){
-                                size = 41070;
-                                //size = 450054;
-                                //size = 81045;
-                                //size = 20382;
-                                imagebuffer = new byte[0];
-                                isSize = true;
-                            }else if(isSize && (imagebuffer!=null)){
-                                if(imagebuffer.length == 0) {
-                                   // preimagebuffer = sizebuffer.clone();
-                                    imagebuffer = new byte[sizebuffer.length];
-                                  //  Log.d("size11 : ",  "::size " + sizebuffer.length);
-                                   // Log.d("size12 : ",  "::size " + read);
-                                    for(int i=0; i<sizebuffer.length; i++){
-                                        imagebuffer[i] = sizebuffer[i];
-                                     //   Log.d("images",""+imagebuffer[i]);
-                                    }
-                                }
-                                else{
-                                    preimagebuffer = imagebuffer.clone();
-                                    imagebuffer = new byte[read + preimagebuffer.length];
-                                    //Log.d("size1 : ",  "::size " + preimagebuffer.length);
-                                    //Log.d("size2 : ",  "::size " + read);
-                                    //Log.d("size3 : ",  "::size " + size);
-                                    for(int i=0; i<preimagebuffer.length; i++){
-                                        imagebuffer[i] = preimagebuffer[i];
-                                    }
-                                    int good=0;
-                                    for(int i=preimagebuffer.length-1; i<read; i++){
-                                        imagebuffer[i] = sizebuffer[good++];
-                                     //   Log.d("images",""+sizebuffer[good-1]);
-                                    }
-                                }
-
-                         //   }
-                                if(imagebuffer != null)
-                            if(imagebuffer.length >=size){
-//                                Log.d("image : ",  "::image " + new String(imagebuffer) +"len : "+ imagebuffer.length);
-                                Log.d("image!!!!!! : ",  "len : "+ imagebuffer.length);
-                                listener.onMessage(imagebuffer);
-                                //Log.d("size3 : ",  "::size " + size);
-                                isImage = false;
-                                isSize = false;
-                                imagebuffer=null;
-                                sizebuffer=null;
-                                preimagebuffer=null;
+                    while ((read = socketInputStream.read(buffer)) >0 && mRun) {
+                        sizebuffer = new byte[read];
+                        System.arraycopy(buffer, 0, sizebuffer, 0, read);
+                        //Server 에서 #i\0 을 보내면 Image 받기 시작
+                        if(new String(sizebuffer).equals("#i\0")){
+                            isImage = true;
+                        }
+                        //#i\0을 받았으면 이어서 Image Size 값을 서버로부터 받는다.
+                        else if(!isSize && isImage && imagebuffer == null){
+                            System.out.println(new String(sizebuffer));
+                           // size = 41070;
+                            size = 1471254;
+                            //size = 450054;
+                            //size = 81045;
+                            //size = 20382;
+                            imagebuffer = new byte[0];
+                            isSize = true;
+                        }
+                        //Image Size를 알아냈으니 Image를 Byte 배열에 저장한다
+                        else if(isSize && (imagebuffer!=null)) {
+                            if (imagebuffer.length == 0) {
+                                imagebuffer = new byte[sizebuffer.length];
+                                System.arraycopy(sizebuffer,0,imagebuffer,0,sizebuffer.length);
+                            } else {
+                                preimagebuffer = imagebuffer.clone();
+                                imagebuffer = new byte[read + preimagebuffer.length];
+                                System.arraycopy(preimagebuffer,0,imagebuffer,0,preimagebuffer.length);
+                                System.arraycopy(sizebuffer,0,imagebuffer,preimagebuffer.length,sizebuffer.length);
                             }
 
+                        //Image를 Size만큼 받으면 리스너를 통해 ImageView에 Image byte[] 값을 넘겨줄수 있다.
+                            if (imagebuffer != null)
+                                if (imagebuffer.length >= size) {
+                                    listener.onMessage(imagebuffer);
+                                    isImage = false;
+                                    isSize = false;
+                                    imagebuffer = null;
+                                    sizebuffer = null;
+                                    preimagebuffer = null;
+                                }
 
                             buffer = new byte[buff_size];
 
-                            //
-
+                            }
                         }
                     }
-                }
             } catch (Exception e) {
                 if(listener!=null)
                     listener.onDisconnect(socket, e.getMessage());
