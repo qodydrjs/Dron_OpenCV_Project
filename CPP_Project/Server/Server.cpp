@@ -17,12 +17,12 @@ int main(int argc, char *argv[])
 
 	int szClntAddr;
 	char message[] = "Hello World!";
-	if (argc != 2)
+	//if (argc != 2)
 
-	{
-		printf("Usage:%s <port>\n", argv[0]);
-		exit(1);
-	}
+	//{
+	//	printf("Usage:%s <port>\n", argv[0]);
+	//	exit(1);
+	//}
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) //소켓 라이브러리 초기화
 		 ErrorHandling("WSAStartup() error!");

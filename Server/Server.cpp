@@ -1,16 +1,14 @@
-#include <stdio.h>
-#include <iostream>
-#include <stdlib.h>
-#include <WinSock2.h>
-#include <windows.h>
-#include <thread>
-#include <string>
-#include <process.h>
+
+#include "File.h"
+#include "stdafx.h"
+#include <fstream>
 
 #define BUF_SIZE 100
 #define MAX_CLNT 256
 
 #define SERVER_PORT 5000
+
+File file;
 
 void ErrorHandling(const char *message);
 unsigned WINAPI HandleClnt(void *arg);
@@ -61,6 +59,11 @@ int main(int argc, char *argv[])
 	if (listen(hServSock, 5) == SOCKET_ERROR) //listen 함수호출을 통해서 생성한 소켓을 서버 소켓으로 완성
 		ErrorHandling("listen() error");
 
+	//file Load
+	file.hFile = file.loadFile();
+	file.setFileSize(GetFileSize(file.hFile, NULL));
+	file.hFileMapping = file.mappingFile();
+
 	while (1)
 	{
 		clntAdrSz = sizeof(clntAddr);
@@ -108,9 +111,113 @@ unsigned WINAPI HandleClnt(void * arg) {
 	SOCKET hClntSock = *((SOCKET*)arg);
 	int strLen = 0, i;
 	char msg[BUF_SIZE];
+	
+	while ((strLen = recv(hClntSock, msg, sizeof(msg), 0)) != 0) {
+		for (int i = 0; i < 3; i++) {
+			if (i == 0)msg[i] = '#';
+			if (i == 1)msg[i] = 'i';
+			if (i == 2)msg[i] = '\0';
+		}
+		SendMsg(msg, 3);
+		//Sleep(100);
+		std::cout << "시작 : " << std::endl;
 
-	while ((strLen = recv(hClntSock, msg, sizeof(msg), 0)) != 0)
-		SendMsg(msg, strLen);
+		for (int i = 0; i < 3; i++) {
+			if (i == 0)msg[i] = '4';
+			if (i == 1)msg[i] = '1';
+			if (i == 2)msg[i] = '\0';
+		}
+		SendMsg(msg, 3);
+		std::cout << "int size : " << sizeof(int)<<std::endl;
+
+		//Sleep(100);
+		//std::ifstream files("C:\\image\\bike.bmp", std::ifstream::binary);
+		//files.seekg(0, std::ifstream::beg);
+		//int n = 0;
+		//while (files.tellg() != -1)
+		//{
+		//	
+		//	char *p = new char[1024];
+		//	memset(p, 0, 1024);
+		//	files.read(p, 1024);
+
+		//	n = send(hClntSock, p, 1024, 0);
+		//	if (n < 0) {
+
+		//	}
+		//	else {
+
+		//	}
+		//	delete p;
+
+		//}
+
+			std::cout << "파일 사이즈 전송 : " << std::endl;
+			std::cout << "파일사이즈 : " << file.getFileSize() << std::endl;
+			/*char buf_image_size[4] = { 0, };
+			buf_image_size[0] = (char)((file.getFileSize() >> 24) & 0xFF);
+			buf_image_size[1] = (char)((file.getFileSize() >> 16) & 0xFF);
+			buf_image_size[2] = (char)((file.getFileSize() >> 8) & 0xFF);
+			buf_image_size[3] = (char)((file.getFileSize() >> 0) & 0xFF);
+
+			std::cout << "파일사이즈TEST : " << buf_image_size[0] +" "
+				<< buf_image_size[1] + " "
+				<< buf_image_size[2] + " "
+				<< buf_image_size[3] << std::endl;*/
+
+			SOCKADDR_IN dataAddr;
+			int dataAddrSz = sizeof(dataAddr);
+			int retval;
+
+			DWORD dwFileSizeHigh;
+			__int64 qwFileSize = GetFileSize(file.hFile, &dwFileSizeHigh);
+			__int64 qwFileOffset = 0;
+
+			while (qwFileSize > 0) {
+				DWORD dwBytesInBlock = BUFSIZE;
+				if (qwFileSize < BUFSIZE) {
+					dwBytesInBlock = qwFileSize;
+				}
+
+				file.pbFile = (char*)MapViewOfFile
+				(
+					file.hFileMapping,
+					FILE_MAP_READ,
+					(DWORD)(qwFileOffset >> 32),  // 상위 오프셋
+					(DWORD)(qwFileOffset & 0xFFFFFFFF),
+					dwBytesInBlock
+				);
+				// 파일전송
+				//SendMsg(file.pbFile, dwBytesInBlock);
+				retval = send(hClntSock, file.pbFile, dwBytesInBlock, 0);
+				if (retval != dwBytesInBlock) {
+					while (1) {
+						retval = send(hClntSock, file.pbFile, dwBytesInBlock, 0);
+						if (retval != 0) break;
+					}
+				}
+				// 뷰를 다 썼으므로, 뷰를 해제한다.
+				UnmapViewOfFile(file.pbFile);
+
+				// 오프셋 및 남은 파일 크기 갱신
+				qwFileOffset += dwBytesInBlock;
+				qwFileSize -= dwBytesInBlock;
+			}
+			//Sleep(100);
+			std::cout << "파일전송 완료 : " << std::endl;
+
+			for (int i = 0; i < 3; i++) {
+				if (i == 0)msg[i] = '$';
+				if (i == 1)msg[i] = 'i';
+				if (i == 2)msg[i] = '\0';
+			}
+			SendMsg(msg, 3);
+
+
+
+	}
+
+
 
 	WaitForSingleObject(hMutex, INFINITE);
 	for (i = 0; i < clntCnt; i++)
@@ -132,8 +239,9 @@ void SendMsg(char * msg, int len)
 {
 	int i;
 	WaitForSingleObject(hMutex, INFINITE);
-	for (i = 0; i < clntCnt; i++)
+	for (i = 0; i < clntCnt; i++) {
 		send(clntSocks[i], msg, len, 0);
+	}
 	ReleaseMutex(hMutex);
 }
 

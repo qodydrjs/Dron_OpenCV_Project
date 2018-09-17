@@ -1,7 +1,10 @@
 package com.example.kccistc.android_client;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.Socket;
 
 /**
@@ -37,6 +43,7 @@ public class PageFragment extends Fragment {
     private Client socket2;
 
     private View views;
+    private FileOutputStream openFileOutput;
 
     public static PageFragment newInstance(int pageNo) {
 
@@ -62,6 +69,7 @@ public class PageFragment extends Fragment {
         // viewPager.setAdapter(getSupportFragmentManager());
         et = views.findViewById(R.id.tx_log);
         btn_start = views.findViewById(R.id.btn_start);
+        imageView = views.findViewById(R.id.imageView);
         et_sendMessage = views.findViewById(R.id.ed_sendMessage);
         et_sendMessage.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -84,12 +92,32 @@ public class PageFragment extends Fragment {
 
 
         ///메세지 SEND 핸들러..
-        final Handler getMessageHandler = new Handler(){
+        @SuppressLint("HandlerLeak") final Handler getMessageHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                byte[] data = msg.getData().getByteArray("msg");
-                ((ImageView) views.findViewById(R.id.imageView)).setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                et.append(msg.getData().get("msg") +"\r\n");
+                try {
+                    byte[] data = msg.getData().getByteArray("msg");
+                    System.out.println(getContext().getFilesDir());
+                    File file = new File(getContext().getFilesDir(),"bike.bmp");
+                    FileOutputStream outputStream;
+                    try{
+                        outputStream = new FileOutputStream(file);
+                        outputStream.write(data);
+                        outputStream.close();
+
+                    }catch (Exception e){e.printStackTrace();}
+                    Bitmap bitmap = null;
+                    bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    imageView.setImageBitmap(bitmap);
+
+                    //imageView.setImageDrawable("");
+                }catch (Exception e){e.printStackTrace();}
+                //BitmapFactory.Options opt = new BitmapFactory.Options();
+              //  opt.inDither = true;
+                //opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
+               // ((ImageView) views.findViewById(R.id.imageView)).setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+               // ((ImageView) views.findViewById(R.id.imageView)).setImageDrawable(BitmapFactory.decodeByteArray(data, 0, data.length));
+              //  et.append(msg.getData().get("msg") +"\r\n");
             }
         };
 
