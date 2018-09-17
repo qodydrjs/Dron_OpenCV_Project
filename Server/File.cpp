@@ -20,10 +20,10 @@ void File::setFileSize(int fSize) {
 	fileSize = fSize;
 }
 
-HANDLE File::loadFile() {
+HANDLE File::loadFile(const char* filePath) {
 	HANDLE hd = CreateFile
 	(
-		"C:\\image\\flower.bmp",   // 파일명
+		filePath,   // 파일명
 		GENERIC_READ,   // 읽기
 		0,
 		NULL,

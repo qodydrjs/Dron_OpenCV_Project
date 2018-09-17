@@ -21,6 +21,6 @@ public:
 	char* getFilePath();
 	void setFilePath(char*);
 
-	HANDLE loadFile();
+	HANDLE loadFile(const char*);
 	HANDLE mappingFile();
 };

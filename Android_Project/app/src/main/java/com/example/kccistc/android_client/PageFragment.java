@@ -107,6 +107,7 @@ public class PageFragment extends Fragment {
 
                     }catch (Exception e){e.printStackTrace();}
                     Bitmap bitmap = null;
+
                     bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                     imageView.setImageBitmap(bitmap);
 
