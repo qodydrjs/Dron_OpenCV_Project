@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.StringTokenizer;
 
 public class Client {
     private static int count = 1;
@@ -33,6 +34,7 @@ public class Client {
     private byte buffer[] = new byte[buff_size];
     private boolean mRun = true;
 
+    private StringTokenizer stringTokenizer;
 
     private String ip;
     private int port;
@@ -95,53 +97,82 @@ public class Client {
             int read;
             try {
                 while(mRun) {
-                   // synchronized (this) {
-                    while ((read = socketInputStream.read(buffer)) >0 && mRun) {
+                    // synchronized (this) {
+                    while ((read = socketInputStream.read(buffer)) > 0 && mRun) {
                         sizebuffer = new byte[read];
                         System.arraycopy(buffer, 0, sizebuffer, 0, read);
-                        //Server 에서 #i\0 을 보내면 Image 받기 시작
-                        if(new String(sizebuffer).equals("#i\0")){
-                            isImage = true;
-                        }
-                        //#i\0을 받았으면 이어서 Image Size 값을 서버로부터 받는다.
-                        else if(!isSize && isImage && imagebuffer == null){
-                            System.out.println(new String(sizebuffer));
-                           // size = 41070;
-                            size = 1471254;
-                            //size = 450054;
-                            //size = 81045;
-                            //size = 20382;
-                            imagebuffer = new byte[0];
-                            isSize = true;
-                        }
-                        //Image Size를 알아냈으니 Image를 Byte 배열에 저장한다
-                        else if(isSize && (imagebuffer!=null)) {
-                            if (imagebuffer.length == 0) {
-                                imagebuffer = new byte[sizebuffer.length];
-                                System.arraycopy(sizebuffer,0,imagebuffer,0,sizebuffer.length);
-                            } else {
-                                preimagebuffer = imagebuffer.clone();
-                                imagebuffer = new byte[read + preimagebuffer.length];
-                                System.arraycopy(preimagebuffer,0,imagebuffer,0,preimagebuffer.length);
-                                System.arraycopy(sizebuffer,0,imagebuffer,preimagebuffer.length,sizebuffer.length);
-                            }
 
-                        //Image를 Size만큼 받으면 리스너를 통해 ImageView에 Image byte[] 값을 넘겨줄수 있다.
-                            if (imagebuffer != null)
-                                if (imagebuffer.length >= size) {
-                                    listener.onMessage(imagebuffer);
-                                    isImage = false;
-                                    isSize = false;
-                                    imagebuffer = null;
-                                    sizebuffer = null;
-                                    preimagebuffer = null;
+                        if (!isSize) {
+                            stringTokenizer = new StringTokenizer(new String(sizebuffer), "$^@");
+                            while (stringTokenizer.hasMoreTokens()) {
+                                if (stringTokenizer.nextToken().equals("#i")) {
+                                    isImage = true;
+                                    System.out.println("#i :::::::::::::::::::");
+                                } else if (!isSize) {
+                                    System.out.println("Size :::::::::::::::::::");
+                                    String aa = stringTokenizer.nextToken();
+                                    System.out.println(aa);
+                                    byte buf_image_size[] = aa.getBytes();
+                                    int s1 = buf_image_size[0] & 0xFF;
+                                    int s2 = buf_image_size[1] & 0xFF;
+                                    int s3 = buf_image_size[2] & 0xFF;
+                                    int s4 = buf_image_size[3] & 0xFF;
+                                    size = (s1 << 24) + (s2 << 16) + (s3 << 8) + (s4 << 0);
+                                    System.out.println(size);
+                                    imagebuffer = new byte[0];
+                                    isSize = true;
+                                } else if (isSize) {
+                                    try {
+                                        String aa = stringTokenizer.nextToken();
+                                        System.out.println(aa);
+                                        imagebuffer = aa.getBytes();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        imagebuffer = new byte[0];
+                                    }
                                 }
 
-                            buffer = new byte[buff_size];
+                            }
+                        } else {
+
+
+//                            //Server 에서 #i\0 을 보내면 Image 받기 시작
+//                            if (new String(sizebuffer).equals("#i\0")) {
+////                            isImage = true;
+//                            }
+//                            //#i\0을 받았으면 이어서 Image Size 값을 서버로부터 받는다.
+//                            else if (!isSize && isImage && imagebuffer == null) {
+//                            }
+                            //Image Size를 알아냈으니 Image를 Byte 배열에 저장한다
+                             if (isSize && (imagebuffer != null)) {
+                                System.out.println(new String(sizebuffer));
+                                if (imagebuffer.length == 0) {
+                                    imagebuffer = new byte[sizebuffer.length];
+                                    System.arraycopy(sizebuffer, 0, imagebuffer, 0, sizebuffer.length);
+                                } else {
+                                    preimagebuffer = imagebuffer.clone();
+                                    imagebuffer = new byte[read + preimagebuffer.length];
+                                    System.arraycopy(preimagebuffer, 0, imagebuffer, 0, preimagebuffer.length);
+                                    System.arraycopy(sizebuffer, 0, imagebuffer, preimagebuffer.length, sizebuffer.length);
+                                }
+
+                                //Image를 Size만큼 받으면 리스너를 통해 ImageView에 Image byte[] 값을 넘겨줄수 있다.
+                                if (imagebuffer != null)
+                                    if (imagebuffer.length >= size) {
+                                        listener.onMessage(imagebuffer);
+                                        isImage = false;
+                                        isSize = false;
+                                        imagebuffer = null;
+                                        sizebuffer = null;
+                                        preimagebuffer = null;
+                                    }
+
+                                buffer = new byte[buff_size];
 
                             }
                         }
                     }
+                }
             } catch (Exception e) {
                 if(listener!=null)
                     listener.onDisconnect(socket, e.getMessage());

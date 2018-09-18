@@ -2,6 +2,7 @@
 #include "File.h"
 #include "stdafx.h"
 #include <fstream>
+#include<algorithm>
 
 #define BUF_SIZE 100
 #define MAX_CLNT 256
@@ -60,10 +61,9 @@ int main(int argc, char *argv[])
 		ErrorHandling("listen() error");
 
 	//file Load
-	file.hFile = file.loadFile();
+	file.hFile = file.loadFile("C:\\image\\unitedstate.jpg");
 	file.setFileSize(GetFileSize(file.hFile, NULL));
 	file.hFileMapping = file.mappingFile();
-
 	while (1)
 	{
 		clntAdrSz = sizeof(clntAddr);
@@ -113,57 +113,62 @@ unsigned WINAPI HandleClnt(void * arg) {
 	char msg[BUF_SIZE];
 	
 	while ((strLen = recv(hClntSock, msg, sizeof(msg), 0)) != 0) {
-		for (int i = 0; i < 3; i++) {
-			if (i == 0)msg[i] = '#';
-			if (i == 1)msg[i] = 'i';
-			if (i == 2)msg[i] = '\0';
-		}
-		SendMsg(msg, 3);
-		//Sleep(100);
 		std::cout << "시작 : " << std::endl;
+		//Token '$','^','@'
+		char buf_start[5] = {'#','i','$','^','@'};
+//		SendMsg(msg, 3);
+		//Image Size byte로 변환 
+		char buf_image_size[7] = { 0, };
+		buf_image_size[0] = (char)((file.getFileSize() >> 24) & 0xFF);
+		buf_image_size[1] = (char)((file.getFileSize() >> 16) & 0xFF);
+		buf_image_size[2] = (char)((file.getFileSize() >> 8) & 0xFF);
+		buf_image_size[3] = (char)((file.getFileSize() >> 0) & 0xFF);
+		buf_image_size[4] = '$';
+		buf_image_size[5] = '^';
+		buf_image_size[6] = '@';
 
-		for (int i = 0; i < 3; i++) {
+		//시작신호 + 이미지 사이즈 합침
+		char buf_Start_ImageSize[sizeof(buf_start) + sizeof(buf_image_size)];
+		//std::copy header =  #include<algorithm> 
+		std::copy(buf_start, buf_start+ sizeof(buf_start), buf_Start_ImageSize);
+		std::copy(buf_image_size, buf_image_size + sizeof(buf_image_size), buf_Start_ImageSize + sizeof(buf_start) );
+		SendMsg(buf_Start_ImageSize,sizeof(buf_Start_ImageSize));
+		//char buf_image_size2[4] = buf_image_size;
+	/*	*/
+
+	/*	for (int i = 0; i < 3; i++) {
 			if (i == 0)msg[i] = '4';
 			if (i == 1)msg[i] = '1';
 			if (i == 2)msg[i] = '\0';
-		}
-		SendMsg(msg, 3);
+		}*/
+		SendMsg(buf_image_size, sizeof(buf_image_size));
 		std::cout << "int size : " << sizeof(int)<<std::endl;
 
-		//Sleep(100);
-		//std::ifstream files("C:\\image\\bike.bmp", std::ifstream::binary);
-		//files.seekg(0, std::ifstream::beg);
-		//int n = 0;
-		//while (files.tellg() != -1)
-		//{
-		//	
-		//	char *p = new char[1024];
-		//	memset(p, 0, 1024);
-		//	files.read(p, 1024);
+		Sleep(100);
+	/*	std::ifstream files("C:\\image\\bike.bmp", std::ifstream::binary);
+		files.seekg(0, std::ifstream::beg);
+		int n = 0;
+		while (files.tellg() != -1)
+		{
+			
+			char *p = new char[1024];
+			memset(p, 0, 1024);
+			files.read(p, 1024);
 
-		//	n = send(hClntSock, p, 1024, 0);
-		//	if (n < 0) {
+			n = send(hClntSock, p, 1024, 0);
+			if (n < 0) {
 
-		//	}
-		//	else {
+			}
+			else {
 
-		//	}
-		//	delete p;
+			}
+			delete p;*/
 
 		//}
 
 			std::cout << "파일 사이즈 전송 : " << std::endl;
 			std::cout << "파일사이즈 : " << file.getFileSize() << std::endl;
-			/*char buf_image_size[4] = { 0, };
-			buf_image_size[0] = (char)((file.getFileSize() >> 24) & 0xFF);
-			buf_image_size[1] = (char)((file.getFileSize() >> 16) & 0xFF);
-			buf_image_size[2] = (char)((file.getFileSize() >> 8) & 0xFF);
-			buf_image_size[3] = (char)((file.getFileSize() >> 0) & 0xFF);
-
-			std::cout << "파일사이즈TEST : " << buf_image_size[0] +" "
-				<< buf_image_size[1] + " "
-				<< buf_image_size[2] + " "
-				<< buf_image_size[3] << std::endl;*/
+	
 
 			SOCKADDR_IN dataAddr;
 			int dataAddrSz = sizeof(dataAddr);
@@ -196,6 +201,7 @@ unsigned WINAPI HandleClnt(void * arg) {
 						if (retval != 0) break;
 					}
 				}
+
 				// 뷰를 다 썼으므로, 뷰를 해제한다.
 				UnmapViewOfFile(file.pbFile);
 
@@ -216,8 +222,7 @@ unsigned WINAPI HandleClnt(void * arg) {
 
 
 	}
-
-
+	
 
 	WaitForSingleObject(hMutex, INFINITE);
 	for (i = 0; i < clntCnt; i++)
