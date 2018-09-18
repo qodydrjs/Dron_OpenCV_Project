@@ -105,25 +105,29 @@ public class Client {
                         if (!isSize) {
                             stringTokenizer = new StringTokenizer(new String(sizebuffer), "$^@");
                             while (stringTokenizer.hasMoreTokens()) {
-                                if (stringTokenizer.nextToken().equals("#i")) {
+                                String token =  stringTokenizer.nextToken();
+
+                                if (token.equals("#i")) {
                                     isImage = true;
                                     System.out.println("#i :::::::::::::::::::");
                                 } else if (!isSize) {
                                     System.out.println("Size :::::::::::::::::::");
-                                    String aa = stringTokenizer.nextToken();
-                                    System.out.println(aa);
-                                    byte buf_image_size[] = aa.getBytes();
-                                    int s1 = buf_image_size[0] & 0xFF;
-                                    int s2 = buf_image_size[1] & 0xFF;
-                                    int s3 = buf_image_size[2] & 0xFF;
-                                    int s4 = buf_image_size[3] & 0xFF;
-                                    size = (s1 << 24) + (s2 << 16) + (s3 << 8) + (s4 << 0);
+                                    String aa = token;
+                                    //System.out.println(Integer.parseInt(aa));
+                                  //  byte buf_image_size[] = aa.getBytes();
+
+//                                    int s1 = buf_image_size[0] & 0xFF;
+//                                    int s2 = buf_image_size[1] & 0xFF;
+//                                    int s3 = buf_image_size[2] & 0xFF;
+//                                    int s4 = buf_image_size[3] & 0xFF;
+//                                    size = (s1 << 24) + (s2 << 16) + (s3 << 8) + (s4 << 0);
+                                    size = Integer.parseInt(aa);
                                     System.out.println(size);
                                     imagebuffer = new byte[0];
                                     isSize = true;
                                 } else if (isSize) {
                                     try {
-                                        String aa = stringTokenizer.nextToken();
+                                        String aa = token;
                                         System.out.println(aa);
                                         imagebuffer = aa.getBytes();
                                     } catch (Exception e) {

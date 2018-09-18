@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include <fstream>
 #include<algorithm>
+#include <string>
 
 #define BUF_SIZE 100
 #define MAX_CLNT 256
@@ -61,7 +62,7 @@ int main(int argc, char *argv[])
 		ErrorHandling("listen() error");
 
 	//file Load
-	file.hFile = file.loadFile("C:\\image\\unitedstate.jpg");
+	file.hFile = file.loadFile("C:\\image\\flower.jpg");
 	file.setFileSize(GetFileSize(file.hFile, NULL));
 	file.hFileMapping = file.mappingFile();
 	while (1)
@@ -116,35 +117,33 @@ unsigned WINAPI HandleClnt(void * arg) {
 		std::cout << "시작 : " << std::endl;
 		//Token '$','^','@'
 		char buf_start[5] = {'#','i','$','^','@'};
-//		SendMsg(msg, 3);
+
 		//Image Size byte로 변환 
-		char buf_image_size[7] = { 0, };
-		buf_image_size[0] = (char)((file.getFileSize() >> 24) & 0xFF);
-		buf_image_size[1] = (char)((file.getFileSize() >> 16) & 0xFF);
-		buf_image_size[2] = (char)((file.getFileSize() >> 8) & 0xFF);
-		buf_image_size[3] = (char)((file.getFileSize() >> 0) & 0xFF);
-		buf_image_size[4] = '$';
-		buf_image_size[5] = '^';
-		buf_image_size[6] = '@';
+		char c_size[100];
+		std::string str_size = std::to_string(file.getFileSize());
+		str_size.append("$^@");
+		std::strncpy(c_size, str_size.c_str(), str_size.length());
+		//string 을 char[] 로 변환 하는 함수 
+		//strs.c_str();
 
 		//시작신호 + 이미지 사이즈 합침
-		char buf_Start_ImageSize[sizeof(buf_start) + sizeof(buf_image_size)];
-		//std::copy header =  #include<algorithm> 
-		std::copy(buf_start, buf_start+ sizeof(buf_start), buf_Start_ImageSize);
-		std::copy(buf_image_size, buf_image_size + sizeof(buf_image_size), buf_Start_ImageSize + sizeof(buf_start) );
-		SendMsg(buf_Start_ImageSize,sizeof(buf_Start_ImageSize));
+		//char buf_Start_ImageSize[sizeof(buf_start) + )];
+		////std::copy header =  #include<algorithm> 
+		//std::copy(buf_start, buf_start+ sizeof(buf_start), buf_Start_ImageSize);
+		//std::copy(buf_image_size, buf_image_size + sizeof(buf_image_size), buf_Start_ImageSize + sizeof(buf_start) );
+		SendMsg(buf_start,sizeof(buf_start)); //이미지 시작 Flag 전송
+		SendMsg(c_size, str_size.length()); //이미지 사이즈 전송
 		//char buf_image_size2[4] = buf_image_size;
 	/*	*/
-
 	/*	for (int i = 0; i < 3; i++) {
 			if (i == 0)msg[i] = '4';
 			if (i == 1)msg[i] = '1';
 			if (i == 2)msg[i] = '\0';
 		}*/
-		SendMsg(buf_image_size, sizeof(buf_image_size));
-		std::cout << "int size : " << sizeof(int)<<std::endl;
+		//SendMsg(buf_image_size, sizeof(buf_image_size));
+		//std::cout << "int size : " << sizeof(int)<<std::endl;
 
-		Sleep(100);
+		//Sleep(100);
 	/*	std::ifstream files("C:\\image\\bike.bmp", std::ifstream::binary);
 		files.seekg(0, std::ifstream::beg);
 		int n = 0;
