@@ -1,0 +1,51 @@
+½´µµ ÄÚµå(server)
+//////////////
+clntCnt <- 0
+main(argc, *argv[])
+
+ WSAStartup(MAKEWORD(2, 2), &wsaData)
+
+ hMutex <- CreateMutex(NULL, FALSE, NULL)
+ hServSock <- socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
+ 
+ memset(&servAddr, 0, sizeof(servAddr))
+ 
+ bind(hServSock, (SOCKADDR*)&servAddr, sizeof(servAddr)
+ listen(hServSock, 5)
+
+ file.hFile <- file.loadFile()
+ file.setFileSize(GetFileSize(file,hFile,NULL))
+ file.hFileMapping <- file.mappingFile()
+
+  while(1){
+      clntAdrSz <- sizeof(clntAddr)
+      hClntSock <- accept(hServSock, (SOCKADDR*)&clntAddr, &clntAdrSz) 
+
+      WaitForSingleObject(hMutex, INFINITE)
+      clntSocks[clntCnt++] <- hClntSock
+      ReleaseMutex(hMutex)
+	
+      hThread <- (HANDLE)_beginthreadex(NULL, 0, HandleClnt, (void *)&hClntSock, 0, NULL)
+  }
+ closesocket(hServSock)
+ WSACleanup()
+ return 0;
+end main()
+
+///////////////////////////
+ErrorHandling(message)
+	Output message
+end ErrorHandling()
+///////////////////////////
+SendMsg(msg,len)
+      WaitForSingleObject(hMutex,INFINITE)
+	FOR i = 0 to clntCnt DO
+	    Send(clntSocks[i],msg,len,0)
+	ENDFOR
+       ReleaseMutex(hMutex)
+end SendMsg()
+/////////////////////////
+HandleClnt(void *)
+
+
+end HandleClnt()
