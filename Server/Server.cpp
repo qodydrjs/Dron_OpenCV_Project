@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 		ErrorHandling("listen() error");
 
 	//file Load
-	file.hFile = file.loadFile("C:\\image\\flower.jpg");
+	file.hFile = file.loadFile("C:\\image\\shape.png");
 	file.setFileSize(GetFileSize(file.hFile, NULL));
 	file.hFileMapping = file.mappingFile();
 	while (1)
