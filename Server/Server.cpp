@@ -147,7 +147,6 @@ unsigned WINAPI HandleClnt(void * arg) {
 			//SendMsg(buf_image_size, sizeof(buf_image_size));
 			//std::cout << "int size : " << sizeof(int)<<std::endl;
 
-			//Sleep(100);
 		/*	std::ifstream files("C:\\image\\bike.bmp", std::ifstream::binary);
 			files.seekg(0, std::ifstream::beg);
 			int n = 0;
@@ -212,16 +211,7 @@ unsigned WINAPI HandleClnt(void * arg) {
 				qwFileOffset += dwBytesInBlock;
 				qwFileSize -= dwBytesInBlock;
 			}
-			//Sleep(100);
 			std::cout << "파일전송 완료 : " << std::endl;
-
-			/*		for (int i = 0; i < 3; i++) {
-						if (i == 0)msg[i] = '$';
-						if (i == 1)msg[i] = 'i';
-						if (i == 2)msg[i] = '\0';
-					}
-					SendMsg(msg, 3);*/
-					//file Load
 	}
 	
 
