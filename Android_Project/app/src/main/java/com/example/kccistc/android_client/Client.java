@@ -119,30 +119,28 @@ public class Client {
                         }
 
                         for(int i=0; i<buffer_u.length; i++){
-                            if(buffer_u[i]==36){//$=36
-                                //System.out.print("$");
-                                if(  buffer_u.length > i+3 ) {
-                                    if (buffer_u[i + 1] == 100) {//d=100
-                                       // System.out.print("^");
-                                        if (buffer_u[i + 2] == 100) {//데이터가 END 이면//d =64
+
+                            ////////////////
+                            ////////////////
+                            if(buffer_u[i]==36)//$=36
+                                if(  buffer_u.length > i+3 )
+                                    if (buffer_u[i + 1] == 100) //d=100
+                                        if (buffer_u[i + 2] == 100) //d =100
                                           if(buffer_u[ i + 3 ]==33) {//!=33
-                                              //  System.out.println("@");
                                               check = true;
                                               check_num = (i + 3) + 1;
                                               tempBuffer = new byte[check_num];  //처리할 데이터 버퍼
                                               System.arraycopy(buffer_u, 0, tempBuffer, 0, check_num);
-                                              if(buffer_u.length > check_num) {
+                                              if (buffer_u.length > check_num) {
                                                   stayBuffer = new byte[buffer_u.length - check_num];
-                                                  System.arraycopy(buffer_u,check_num,stayBuffer,0,buffer_u.length - check_num);
-                                              }else{
+                                                  System.arraycopy(buffer_u, check_num, stayBuffer, 0, buffer_u.length - check_num);
+                                              } else {
                                                   stayBuffer = new byte[0];
                                               }
                                               break;
                                           }
-                                        }
-                                    }
-                                }
-                            }
+                            ////////////////////////
+                            ///////////////////////
                             if(i == buffer_u.length-1) {
                                 stayBuffer = buffer_u.clone();
                             }
@@ -167,32 +165,8 @@ public class Client {
                                         isSize = true;
                                         check = false;
                                     }
-//                                    else if (isSize) {
-//                                        try {
-//                                            String str_token = token;
-//                                            imagebuffer = str_token.getBytes();
-//                                        } catch (Exception e) {
-//                                            e.printStackTrace();
-//                                            imagebuffer = new byte[0];
-//                                        }
-//                                    }
-
                                 }
                             } else {
-                               // imagebuffer = new byte[0];
-
-                               // if (isSize && (sizebuffer != null)) {
-//                                    System.out.println("::::::::::::::::::::::::::::::::::imagebuffer");
-//                                    if (imagebuffer.length == 0) {
-//                                        imagebuffer = new byte[sizebuffer.length];
-//                                        System.arraycopy(sizebuffer, 0, imagebuffer, 0, sizebuffer.length);
-//                                    } else {
-//                                        preimagebuffer = imagebuffer.clone();
-//                                        imagebuffer = new byte[read + preimagebuffer.length];
-//                                        System.arraycopy(preimagebuffer, 0, imagebuffer, 0, preimagebuffer.length);
-//                                        System.arraycopy(sizebuffer, 0, imagebuffer, preimagebuffer.length, sizebuffer.length);
-//                                    }
-                                System.out.println(tempBuffer.length);
                                     if (tempBuffer != null)
                                         if (tempBuffer.length >= size) {
                                             listener.onMessage(tempBuffer);
@@ -206,8 +180,6 @@ public class Client {
                                     buffer = new byte[buff_size];
                                 }
                           //  }
-
-
 
                         }else{
 //////////////////////////////////////
