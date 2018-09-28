@@ -9,25 +9,25 @@
        android:layout_width="match_parent"
        android:layout_height="match_parent"> -->
 
-       <com.example.kccistc.android_client.CustomViewPager
-           android:id="@+id/ViewPager1"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:layout_below="@id/tab_layout"
-           />
+        <com.example.kccistc.android_client.CustomViewPager
+            android:id="@+id/ViewPager1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/tab_layout" />
 
 
-       <android.support.design.widget.TabLayout
-           android:id="@+id/tab_layout"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:background="#ffffff"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
 
-           android:minHeight="?attr/actionBarSize"
-           android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-           app:tabIndicatorColor="#bbdefa"
-           app:tabSelectedTextColor="#ffffff"
-           app:tabTextColor="#88ffffff" />
+            android:background="#ffffff"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:tabIndicatorColor="#bbdefa"
+            app:tabSelectedTextColor="#ffffff"
+            app:tabTextColor="#88ffffff" />
 
   </RelativeLayout>
 

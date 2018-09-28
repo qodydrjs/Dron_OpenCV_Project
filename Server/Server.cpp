@@ -62,9 +62,13 @@ int main(int argc, char *argv[])
 		ErrorHandling("listen() error");
 
 	//file Load
-	file.hFile = file.loadFile("C:\\image\\shape.png");
+	/*file.hFile = file.loadFile("C:\\image\\shape.png");
 	file.setFileSize(GetFileSize(file.hFile, NULL));
 	file.hFileMapping = file.mappingFile();
+
+	file.hFile = file.loadFile("C:\\image\\girl.jpg");
+	file.setFileSize(GetFileSize(file.hFile, NULL));
+	file.hFileMapping = file.mappingFile();*/
 
 	while (1)
 	{
@@ -115,58 +119,28 @@ unsigned WINAPI HandleClnt(void * arg) {
 	char msg[BUF_SIZE];
 	
 	while ((strLen = recv(hClntSock, msg, sizeof(msg), 0)) != 0) {
-		//file Load
-		
 
+		char buf_end[4] = { '$','d','d','!' };
+		////////////////////////
+		///////////////////////
+		while (true) {
+
+			file.hFile = file.loadFile("C:\\image\\girlsgeneration.JPG");
+			file.setFileSize(GetFileSize(file.hFile, NULL));
+			file.hFileMapping = file.mappingFile();
 			std::cout << "시작 : " << std::endl;
 			//Token '$','^','@'
-			char buf_start[5] = { '#','i','$','^','@' };
-
+			char buf_start[6] = { '#','i','$','d','d','!' };
+			printf("%c\n", buf_start[5]);
+			printf("%d\n", buf_start[5]);
 			//Image Size byte로 변환 
 			char c_size[100];
 			std::string str_size = std::to_string(file.getFileSize());
-			str_size.append("$^@");
+			str_size.append("$dd!");
 			std::strncpy(c_size, str_size.c_str(), str_size.length());
-			//string 을 char[] 로 변환 하는 함수 
-			//strs.c_str();
 
-			//시작신호 + 이미지 사이즈 합침
-			//char buf_Start_ImageSize[sizeof(buf_start) + )];
-			////std::copy header =  #include<algorithm> 
-			//std::copy(buf_start, buf_start+ sizeof(buf_start), buf_Start_ImageSize);
-			//std::copy(buf_image_size, buf_image_size + sizeof(buf_image_size), buf_Start_ImageSize + sizeof(buf_start) );
 			SendMsg(buf_start, sizeof(buf_start)); //이미지 시작 Flag 전송
 			SendMsg(c_size, str_size.length()); //이미지 사이즈 전송
-			//char buf_image_size2[4] = buf_image_size;
-		/*	*/
-		/*	for (int i = 0; i < 3; i++) {
-				if (i == 0)msg[i] = '4';
-				if (i == 1)msg[i] = '1';
-				if (i == 2)msg[i] = '\0';
-			}*/
-			//SendMsg(buf_image_size, sizeof(buf_image_size));
-			//std::cout << "int size : " << sizeof(int)<<std::endl;
-
-		/*	std::ifstream files("C:\\image\\bike.bmp", std::ifstream::binary);
-			files.seekg(0, std::ifstream::beg);
-			int n = 0;
-			while (files.tellg() != -1)
-			{
-
-				char *p = new char[1024];
-				memset(p, 0, 1024);
-				files.read(p, 1024);
-
-				n = send(hClntSock, p, 1024, 0);
-				if (n < 0) {
-
-				}
-				else {
-
-				}
-				delete p;*/
-
-				//}
 
 			std::cout << "파일 사이즈 전송 : " << std::endl;
 			std::cout << "파일사이즈 : " << file.getFileSize() << std::endl;
@@ -180,6 +154,80 @@ unsigned WINAPI HandleClnt(void * arg) {
 			__int64 qwFileSize = GetFileSize(file.hFile, &dwFileSizeHigh);
 			__int64 qwFileOffset = 0;
 
+			WaitForSingleObject(hMutex, INFINITE);
+			while (qwFileSize > 0) {
+				DWORD dwBytesInBlock = BUFSIZE;
+				if (qwFileSize < BUFSIZE) {
+					dwBytesInBlock = qwFileSize;
+				}
+
+				file.pbFile = (char*)MapViewOfFile
+				(
+					file.hFileMapping,
+					FILE_MAP_READ,
+					(DWORD)(qwFileOffset >> 32),  // 상위 오프셋
+					(DWORD)(qwFileOffset & 0xFFFFFFFF),
+					dwBytesInBlock
+				);
+				// 파일전송
+				//SendMsg(file.pbFile, dwBytesInBlock);
+				retval = send(hClntSock, file.pbFile, dwBytesInBlock, 0);
+				if (retval != dwBytesInBlock) {
+					while (1) {
+						retval = send(hClntSock, file.pbFile, dwBytesInBlock, 0);
+						if (retval != 0) break;
+					}
+				}
+				//endflag
+				//char buf_end[8] = { '$','^','@'};
+
+				// 뷰를 다 썼으므로, 뷰를 해제한다.
+				UnmapViewOfFile(file.pbFile);
+
+				// 오프셋 및 남은 파일 크기 갱신
+				qwFileOffset += dwBytesInBlock;
+				qwFileSize -= dwBytesInBlock;
+			}
+			ReleaseMutex(hMutex);
+			Sleep(100);
+			SendMsg(buf_end, sizeof(buf_end)); //이미지 END Flag 전송
+			std::cout << "파일전송 완료 : " << std::endl;
+
+			
+
+			file.hFile = file.loadFile("C:\\image\\scene.jpg");
+			file.setFileSize(GetFileSize(file.hFile, NULL));
+			file.hFileMapping = file.mappingFile();
+
+			//////////////////////////////
+			//////////////////////////////
+
+			std::cout << "시작 : " << std::endl;
+			//Token '$','^','@'
+			char buf_start2[6] = { '#','i','$','d','d','!' };
+
+			//Image Size byte로 변환 
+			//char c_size[100];
+			str_size = std::to_string(file.getFileSize());
+			str_size.append("$dd!");
+			std::strncpy(c_size, str_size.c_str(), str_size.length());
+
+			SendMsg(buf_start2, sizeof(buf_start2)); //이미지 시작 Flag 전송
+			SendMsg(c_size, str_size.length()); //이미지 사이즈 전송
+
+			std::cout << "파일 사이즈 전송 : " << std::endl;
+			std::cout << "파일사이즈 : " << file.getFileSize() << std::endl;
+
+
+			//SOCKADDR_IN dataAddr;
+			dataAddrSz = sizeof(dataAddr);
+			retval;
+
+			//DWORD dwFileSizeHigh;
+			qwFileSize = GetFileSize(file.hFile, &dwFileSizeHigh);
+			qwFileOffset = 0;
+
+			WaitForSingleObject(hMutex, INFINITE);
 			while (qwFileSize > 0) {
 				DWORD dwBytesInBlock = BUFSIZE;
 				if (qwFileSize < BUFSIZE) {
@@ -204,6 +252,9 @@ unsigned WINAPI HandleClnt(void * arg) {
 					}
 				}
 
+				//endflag
+				//char buf_start[8] = { '$','^','@','#','e','$','^','@' };
+				
 				// 뷰를 다 썼으므로, 뷰를 해제한다.
 				UnmapViewOfFile(file.pbFile);
 
@@ -211,7 +262,13 @@ unsigned WINAPI HandleClnt(void * arg) {
 				qwFileOffset += dwBytesInBlock;
 				qwFileSize -= dwBytesInBlock;
 			}
+
+			ReleaseMutex(hMutex);
+			SendMsg(buf_end, sizeof(buf_end)); //이미지 END Flag 전송
+			Sleep(100);
+			
 			std::cout << "파일전송 완료 : " << std::endl;
+		}
 	}
 	
 

@@ -21,6 +21,11 @@ public:
 	char* getFilePath();
 	void setFilePath(char*);
 
+	inline void reset() const
+	{
+		
+	}
+
 	HANDLE loadFile(const char*);
 	HANDLE mappingFile();
 };

@@ -25,7 +25,7 @@ HANDLE File::loadFile(const char* filePath) {
 	(
 		filePath,   // 파일명
 		GENERIC_READ,   // 읽기
-		0,
+		FILE_SHARE_READ,
 		NULL,
 		OPEN_EXISTING,
 		FILE_ATTRIBUTE_NORMAL,

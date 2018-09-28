@@ -91,89 +91,126 @@ public class Client {
     private class ReceiveThread extends Thread implements Runnable{
         public void run(){
             String message;
+            sizebuffer = new byte[0];
+            byte stayBuffer[] = new byte[0];
+            byte tempBuffer[] = new byte[0];
             buffer = new byte[buff_size];
+            byte buffer_u[] = new byte[0];
             imagebuffer = null;
-
+            boolean check = false;
+            int check_num =-1;
             int read;
+
+            byte temp[];
+
             try {
                 while(mRun) {
                     // synchronized (this) {
                     while ((read = socketInputStream.read(buffer)) > 0 && mRun) {
-                        sizebuffer = new byte[read];
-                        System.arraycopy(buffer, 0, sizebuffer, 0, read);
 
-                        if (!isSize) {
-                            stringTokenizer = new StringTokenizer(new String(sizebuffer), "$^@");
-                            while (stringTokenizer.hasMoreTokens()) {
-                                String token =  stringTokenizer.nextToken();
+                        if(stayBuffer.length >=1){
+                            temp = new byte[stayBuffer.length+read];
+                            System.arraycopy(stayBuffer,0,temp,0,stayBuffer.length);
+                            System.arraycopy(buffer,0,temp,stayBuffer.length,read);
+                            buffer_u  =  temp.clone();
+                        }else{
+                            buffer_u  = new byte[read];
+                            System.arraycopy(buffer,0,buffer_u,0,read);
+                        }
 
-                                if (token.equals("#i")) {
-                                    isImage = true;
-                                    System.out.println("#i :::::::::::::::::::");
-                                } else if (!isSize) {
-                                    System.out.println("Size :::::::::::::::::::");
-                                    String aa = token;
-                                    //System.out.println(Integer.parseInt(aa));
-                                  //  byte buf_image_size[] = aa.getBytes();
+                        for(int i=0; i<buffer_u.length; i++){
+                            if(buffer_u[i]==36){//$=36
+                                //System.out.print("$");
+                                if(  buffer_u.length > i+3 ) {
+                                    if (buffer_u[i + 1] == 100) {//d=100
+                                       // System.out.print("^");
+                                        if (buffer_u[i + 2] == 100) {//데이터가 END 이면//d =64
+                                          if(buffer_u[ i + 3 ]==33) {//!=33
+                                              //  System.out.println("@");
+                                              check = true;
+                                              check_num = (i + 3) + 1;
+                                              tempBuffer = new byte[check_num];  //처리할 데이터 버퍼
+                                              System.arraycopy(buffer_u, 0, tempBuffer, 0, check_num);
+                                              if(buffer_u.length > check_num) {
+                                                  stayBuffer = new byte[buffer_u.length - check_num];
+                                                  System.arraycopy(buffer_u,check_num,stayBuffer,0,buffer_u.length - check_num);
+                                              }else{
+                                                  stayBuffer = new byte[0];
+                                              }
+                                              break;
+                                          }
+                                        }
+                                    }
+                                }
+                            }
+                            if(i == buffer_u.length-1) {
+                                stayBuffer = buffer_u.clone();
+                            }
+                        }
 
-//                                    int s1 = buf_image_size[0] & 0xFF;
-//                                    int s2 = buf_image_size[1] & 0xFF;
-//                                    int s3 = buf_image_size[2] & 0xFF;
-//                                    int s4 = buf_image_size[3] & 0xFF;
-//                                    size = (s1 << 24) + (s2 << 16) + (s3 << 8) + (s4 << 0);
-                                    size = Integer.parseInt(aa);
-                                    System.out.println(size);
-                                    imagebuffer = new byte[0];
-                                    isSize = true;
-                                } else if (isSize) {
-                                    try {
-                                        String aa = token;
-                                        System.out.println(aa);
-                                        imagebuffer = aa.getBytes();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                        if(check == true){ //데이터가 END 이면 할 처리
+                            //sizebuffer = tempBuffer.clone();
+                            if (!isSize) {
+                                stringTokenizer = new StringTokenizer(new String(tempBuffer), "$dd!");
+                                while (stringTokenizer.hasMoreTokens()) {
+                                    String token =  stringTokenizer.nextToken();
+                                    if (token.equals("#i")) {
+                                        isImage = true;
+                                        //System.out.println("#i :::::::::::::::::::");
+                                        check = false;
+                                    } else if (!isSize) {
+                                        //System.out.println("Size :::::::::::::::::::");
+                                        String str_token = token;
+                                        size = Integer.parseInt(str_token);
+                                        //System.out.println(size);
                                         imagebuffer = new byte[0];
+                                        isSize = true;
+                                        check = false;
                                     }
+//                                    else if (isSize) {
+//                                        try {
+//                                            String str_token = token;
+//                                            imagebuffer = str_token.getBytes();
+//                                        } catch (Exception e) {
+//                                            e.printStackTrace();
+//                                            imagebuffer = new byte[0];
+//                                        }
+//                                    }
+
                                 }
+                            } else {
+                               // imagebuffer = new byte[0];
 
-                            }
-                        } else {
-
-
-//                            //Server 에서 #i\0 을 보내면 Image 받기 시작
-//                            if (new String(sizebuffer).equals("#i\0")) {
-////                            isImage = true;
-//                            }
-//                            //#i\0을 받았으면 이어서 Image Size 값을 서버로부터 받는다.
-//                            else if (!isSize && isImage && imagebuffer == null) {
-//                            }
-                            //Image Size를 알아냈으니 Image를 Byte 배열에 저장한다
-                             if (isSize && (imagebuffer != null)) {
-                                System.out.println(new String(sizebuffer));
-                                if (imagebuffer.length == 0) {
-                                    imagebuffer = new byte[sizebuffer.length];
-                                    System.arraycopy(sizebuffer, 0, imagebuffer, 0, sizebuffer.length);
-                                } else {
-                                    preimagebuffer = imagebuffer.clone();
-                                    imagebuffer = new byte[read + preimagebuffer.length];
-                                    System.arraycopy(preimagebuffer, 0, imagebuffer, 0, preimagebuffer.length);
-                                    System.arraycopy(sizebuffer, 0, imagebuffer, preimagebuffer.length, sizebuffer.length);
+                               // if (isSize && (sizebuffer != null)) {
+//                                    System.out.println("::::::::::::::::::::::::::::::::::imagebuffer");
+//                                    if (imagebuffer.length == 0) {
+//                                        imagebuffer = new byte[sizebuffer.length];
+//                                        System.arraycopy(sizebuffer, 0, imagebuffer, 0, sizebuffer.length);
+//                                    } else {
+//                                        preimagebuffer = imagebuffer.clone();
+//                                        imagebuffer = new byte[read + preimagebuffer.length];
+//                                        System.arraycopy(preimagebuffer, 0, imagebuffer, 0, preimagebuffer.length);
+//                                        System.arraycopy(sizebuffer, 0, imagebuffer, preimagebuffer.length, sizebuffer.length);
+//                                    }
+                                System.out.println(tempBuffer.length);
+                                    if (tempBuffer != null)
+                                        if (tempBuffer.length >= size) {
+                                            listener.onMessage(tempBuffer);
+                                            isImage = false;
+                                            isSize = false;
+                                            imagebuffer = null;
+                                            sizebuffer = null;
+                                            preimagebuffer = null;
+                                            check = false;
+                                        }
+                                    buffer = new byte[buff_size];
                                 }
+                          //  }
 
-                                //Image를 Size만큼 받으면 리스너를 통해 ImageView에 Image byte[] 값을 넘겨줄수 있다.
-                                if (imagebuffer != null)
-                                    if (imagebuffer.length >= size) {
-                                        listener.onMessage(imagebuffer);
-                                        isImage = false;
-                                        isSize = false;
-                                        imagebuffer = null;
-                                        sizebuffer = null;
-                                        preimagebuffer = null;
-                                    }
 
-                                buffer = new byte[buff_size];
 
-                            }
+                        }else{
+//////////////////////////////////////
                         }
                     }
                 }
