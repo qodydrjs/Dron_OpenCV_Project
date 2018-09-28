@@ -1,0 +1,5 @@
+﻿  File.cpp
+c:\users\kccistc\source\repos\filedll1\filedll1\file.cpp(11): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+     C:\Users\kccistc\source\repos\FileDll1\Debug\FileDll1.lib 라이브러리 및 C:\Users\kccistc\source\repos\FileDll1\Debug\FileDll1.exp 개체를 생성하고 있습니다.
+  FileDll1.vcxproj -> C:\Users\kccistc\source\repos\FileDll1\Debug\FileDll1.dll
