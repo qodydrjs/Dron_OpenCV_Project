@@ -184,13 +184,10 @@ public class Client {
                                     String token =  stringTokenizer.nextToken();
                                     if (token.equals("#i")) {
                                         isImage = true;
-                                        //System.out.println("#i :::::::::::::::::::");
                                         check = false;
                                     } else if (!isSize) {
-                                        //System.out.println("Size :::::::::::::::::::");
                                         String str_token = token;
                                         size = Integer.parseInt(str_token);
-                                        //System.out.println(size);
                                         imagebuffer = new byte[0];
                                         isSize = true;
                                         check = false;
@@ -208,13 +205,12 @@ public class Client {
                                             check = false;
                                             size = -1;
                                         }
-                                    buffer = new byte[buff_size];
+                                    //buffer = new byte[buff_size];
                                 }
                           //  }
 
-                        }else{
-//////////////////////////////////////
                         }
+                        buffer = new byte[buff_size];
                     }
                 }
             } catch (Exception e) {
