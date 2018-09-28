@@ -21,7 +21,7 @@ public class Client {
     private static byte[] imagebuffer;
     private static byte[] sizebuffer;
     private static byte[] preimagebuffer;
-    private static int size;
+    private static int size = -1;
 
     private Socket socket;
     private OutputStream socketOutput;
@@ -108,41 +108,71 @@ public class Client {
                     // synchronized (this) {
                     while ((read = socketInputStream.read(buffer)) > 0 && mRun) {
 
-                        if(stayBuffer.length >=1){
-                            temp = new byte[stayBuffer.length+read];
-                            System.arraycopy(stayBuffer,0,temp,0,stayBuffer.length);
-                            System.arraycopy(buffer,0,temp,stayBuffer.length,read);
-                            buffer_u  =  temp.clone();
-                        }else{
-                            buffer_u  = new byte[read];
-                            System.arraycopy(buffer,0,buffer_u,0,read);
+                        if (stayBuffer.length >= 1) {
+                            temp = new byte[stayBuffer.length + read];
+                            System.arraycopy(stayBuffer, 0, temp, 0, stayBuffer.length);
+                            System.arraycopy(buffer, 0, temp, stayBuffer.length, read);
+                            buffer_u = temp.clone();
+                        } else {
+                            buffer_u = new byte[read];
+                            System.arraycopy(buffer, 0, buffer_u, 0, read);
                         }
 
-                        for(int i=0; i<buffer_u.length; i++){
+                        if (size == -1 ){
+                            for (int i = 0; i < buffer_u.length; i++) {
 
-                            ////////////////
-                            ////////////////
-                            if(buffer_u[i]==36)//$=36
-                                if(  buffer_u.length > i+3 )
-                                    if (buffer_u[i + 1] == 100) //d=100
-                                        if (buffer_u[i + 2] == 100) //d =100
-                                          if(buffer_u[ i + 3 ]==33) {//!=33
-                                              check = true;
-                                              check_num = (i + 3) + 1;
-                                              tempBuffer = new byte[check_num];  //처리할 데이터 버퍼
-                                              System.arraycopy(buffer_u, 0, tempBuffer, 0, check_num);
-                                              if (buffer_u.length > check_num) {
-                                                  stayBuffer = new byte[buffer_u.length - check_num];
-                                                  System.arraycopy(buffer_u, check_num, stayBuffer, 0, buffer_u.length - check_num);
-                                              } else {
-                                                  stayBuffer = new byte[0];
-                                              }
-                                              break;
-                                          }
-                            ////////////////////////
-                            ///////////////////////
-                            if(i == buffer_u.length-1) {
-                                stayBuffer = buffer_u.clone();
+                                if (buffer_u[i] == 36)//$=36
+                                    if (buffer_u.length > i + 3)
+                                        if (buffer_u[i + 1] == 100) //d=100
+                                            if (buffer_u[i + 2] == 100) //d =100
+                                                if (buffer_u[i + 3] == 33) {//!=33
+                                                    check = true;
+                                                    check_num = (i + 3) + 1;
+                                                    tempBuffer = new byte[check_num];  //처리할 데이터 버퍼
+                                                    System.arraycopy(buffer_u, 0, tempBuffer, 0, check_num);
+                                                    if (buffer_u.length > check_num) {
+                                                        stayBuffer = new byte[buffer_u.length - check_num];
+                                                        System.arraycopy(buffer_u, check_num, stayBuffer, 0, buffer_u.length - check_num);
+                                                    } else {
+                                                        stayBuffer = new byte[0];
+                                                    }
+                                                    break;
+                                                }
+
+                                if (i == buffer_u.length - 1) {
+                                    stayBuffer = buffer_u.clone();
+                                }
+                            }
+                    }else {
+                            int startNum = 0;
+                            if(buffer_u.length > 30)
+                                startNum = buffer_u.length - 30;
+                            else
+                                startNum = 0;
+
+                            for (int i = startNum; i < buffer_u.length; i++) {
+
+                                if (buffer_u[i] == 36)//$=36
+                                    if (buffer_u.length > i + 3)
+                                        if (buffer_u[i + 1] == 100) //d=100
+                                            if (buffer_u[i + 2] == 100) //d =100
+                                                if (buffer_u[i + 3] == 33) {//!=33
+                                                    check = true;
+                                                    check_num = (i + 3) + 1;
+                                                    tempBuffer = new byte[check_num];  //처리할 데이터 버퍼
+                                                    System.arraycopy(buffer_u, 0, tempBuffer, 0, check_num);
+                                                    if (buffer_u.length > check_num) {
+                                                        stayBuffer = new byte[buffer_u.length - check_num];
+                                                        System.arraycopy(buffer_u, check_num, stayBuffer, 0, buffer_u.length - check_num);
+                                                    } else {
+                                                        stayBuffer = new byte[0];
+                                                    }
+                                                    break;
+                                                }
+
+                                if (i == buffer_u.length - 1) {
+                                    stayBuffer = buffer_u.clone();
+                                }
                             }
                         }
 
@@ -176,6 +206,7 @@ public class Client {
                                             sizebuffer = null;
                                             preimagebuffer = null;
                                             check = false;
+                                            size = -1;
                                         }
                                     buffer = new byte[buff_size];
                                 }
