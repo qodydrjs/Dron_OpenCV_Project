@@ -53,104 +53,150 @@ public class PageFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        System.out.println("onStart ::::::::::::::::");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("onResume ::::::::::::::::");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("onPause ::::::::::::::::");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        System.out.println("onStop ::::::::::::::::");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        System.out.println("onDestroy ::::::::::::::::");
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPageNo = getArguments().getInt(ARG_PAGE);
     }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        views = inflater.inflate(R.layout.fragment_page, container, false);
 
-        TextView textView = (TextView) views.findViewById(R.id.text_view);
-        textView.setText(getString(R.string.server_ip));
+        //System.out.println("CreateVIew :::::::::: " + mPageNo);
 
-        // viewPager.setAdapter(getSupportFragmentManager());
-        et = views.findViewById(R.id.tx_log);
-        btn_start = views.findViewById(R.id.btn_start);
-        imageView = views.findViewById(R.id.imageView);
-        et_sendMessage = views.findViewById(R.id.ed_sendMessage);
-        et_sendMessage.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                try {
-                    Log.d("SimpleSocket", ""+keyCode);
-                    if (keyCode == 66) {
-                        EditText et_msg = (EditText) v;
-                        String msg = et_msg.getText().toString();
-                        if(msg.length() > 0) {
-                            socket2.send(msg);
-                            et_msg.setText("");
+        if(mPageNo == 1) {
+            views = inflater.inflate(R.layout.fragment_page, container, false);
+
+
+            TextView textView = (TextView) views.findViewById(R.id.text_view);
+            textView.setText(getString(R.string.server_ip));
+
+            // viewPager.setAdapter(getSupportFragmentManager());
+            et = views.findViewById(R.id.tx_log);
+            btn_start = views.findViewById(R.id.btn_start);
+            imageView = views.findViewById(R.id.imageView);
+            et_sendMessage = views.findViewById(R.id.ed_sendMessage);
+            et_sendMessage.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    try {
+                        Log.d("SimpleSocket", ""+keyCode);
+                        if (keyCode == 66) {
+                            EditText et_msg = (EditText) v;
+                            String msg = et_msg.getText().toString();
+                            if(msg.length() > 0) {
+                                socket2.send(msg);
+                                et_msg.setText("");
+                            }
                         }
-                    }
-                }catch (Exception e){e.printStackTrace();}
-
-                return false;
-            }
-        });
-
-
-        ///메세지 SEND 핸들러..
-        @SuppressLint("HandlerLeak") final Handler getMessageHandler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                try {
-                    byte[] data = msg.getData().getByteArray("msg");
-                    System.out.println(getContext().getFilesDir());
-                    File file = new File(getContext().getFilesDir(),"bike.bmp");
-                    FileOutputStream outputStream;
-                    try{
-                        outputStream = new FileOutputStream(file);
-                        outputStream.write(data);
-                        outputStream.close();
-
                     }catch (Exception e){e.printStackTrace();}
-                    Bitmap bitmap = null;
 
-                    bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    imageView.setImageBitmap(bitmap);
+                    return false;
+                }
+            });
 
-                    //imageView.setImageDrawable("");
-                }catch (Exception e){e.printStackTrace();}
-                //BitmapFactory.Options opt = new BitmapFactory.Options();
-              //  opt.inDither = true;
-                //opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
-               // ((ImageView) views.findViewById(R.id.imageView)).setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-               // ((ImageView) views.findViewById(R.id.imageView)).setImageDrawable(BitmapFactory.decodeByteArray(data, 0, data.length));
-              //  et.append(msg.getData().get("msg") +"\r\n");
-            }
-        };
 
-        btn_start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ip = views.findViewById(R.id.ed_ip);
-                port = views.findViewById(R.id.ed_port);
+            ///메세지 SEND 핸들러..
+            @SuppressLint("HandlerLeak") final Handler getMessageHandler = new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    try {
+                        byte[] data = msg.getData().getByteArray("msg");
+                        System.out.println(getContext().getFilesDir());
+                        File file = new File(getContext().getFilesDir(),"bike.bmp");
+                        FileOutputStream outputStream;
+                        try{
+                            outputStream = new FileOutputStream(file);
+                            outputStream.write(data);
+                            outputStream.close();
+
+                        }catch (Exception e){e.printStackTrace();}
+                        Bitmap bitmap = null;
+
+                        bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        imageView.setImageBitmap(bitmap);
+
+                        //imageView.setImageDrawable("");
+                    }catch (Exception e){e.printStackTrace();}
+                    //BitmapFactory.Options opt = new BitmapFactory.Options();
+                    //  opt.inDither = true;
+                    //opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                    // ((ImageView) views.findViewById(R.id.imageView)).setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                    // ((ImageView) views.findViewById(R.id.imageView)).setImageDrawable(BitmapFactory.decodeByteArray(data, 0, data.length));
+                    //  et.append(msg.getData().get("msg") +"\r\n");
+                }
+            };
+
+            btn_start.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ip = views.findViewById(R.id.ed_ip);
+                    port = views.findViewById(R.id.ed_port);
 
 //                Toast t = Toast.makeText(getApplicationContext(),ip.getText().toString() + "" +port.getText().toString(),Toast.LENGTH_SHORT);
 //                t.show();
-                try {
-                    if (ip.getText().toString().length() > 5 && port.getText().toString().length() > 2) {
-                        socket2 = new Client(ip.getText().toString(), Integer.parseInt(port.getText().toString()));
-                        setClientCallback(socket2, getMessageHandler);
-                    } else {
-                        socket2 = new Client(default_ip, default_Port);
-                        setClientCallback(socket2, getMessageHandler);
-                    }
-                    if (!socket2.equals(null)) {
-                        setClientCallback(socket2, getMessageHandler);
-                        socket2.connect();
-                    }
-                }catch (Exception e){
                     try {
-                        socket2.disconnect();
-                    }catch (Exception es){es.printStackTrace();}
-                    e.printStackTrace();
-                }
+                        if (ip.getText().toString().length() > 5 && port.getText().toString().length() > 2) {
+                            socket2 = new Client(ip.getText().toString(), Integer.parseInt(port.getText().toString()));
+                            setClientCallback(socket2, getMessageHandler);
+                        } else {
+                            socket2 = new Client(default_ip, default_Port);
+                            setClientCallback(socket2, getMessageHandler);
+                        }
+                        if (!socket2.equals(null)) {
+                            setClientCallback(socket2, getMessageHandler);
+                            socket2.connect();
+                        }
+                    }catch (Exception e){
+                        try {
+                            socket2.disconnect();
+                        }catch (Exception es){es.printStackTrace();}
+                        e.printStackTrace();
+                    }
 
-            }
-        });
+                }
+            });
+
+        }
+
+        else if (mPageNo == 2)
+            views = inflater.inflate(R.layout.fragment_page1, container, false);
+        else if (mPageNo == 3)
+            views = inflater.inflate(R.layout.fragment_page2, container, false);
+
 
         return views;
     }

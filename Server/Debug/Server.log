@@ -1,4 +1,3 @@
 ﻿  Server.cpp
-f:\project20180911\dron_opencv_project\server\server.cpp(142): warning C4244: '=': '__int64'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-f:\project20180911\dron_opencv_project\server\server.cpp(215): warning C4244: '=': '__int64'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Server.vcxproj -> F:\Project20180911\Dron_OpenCV_Project\Server\Debug\Server.exe
+c:\project\dron_opencv_project\server\server.cpp(142): warning C4244: '=': '__int64'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Server.vcxproj -> C:\project\Dron_OpenCV_Project\Server\Debug\Server.exe
