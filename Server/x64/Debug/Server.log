@@ -1,0 +1,9 @@
+﻿  Server.cpp
+c:\project\dron_opencv_project\server\server.cpp(125): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\project\dron_opencv_project\server\server.cpp(143): warning C4244: '=': '__int64'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+Server.obj : error LNK2019: "__declspec(dllimport) public: int __cdecl File::getFileSize(void)" (__imp_?getFileSize@File@@QEAAHXZ) 외부 기호(참조 위치: "unsigned int __cdecl HandleClnt(void *)" (?HandleClnt@@YAIPEAX@Z) 함수)에서 확인하지 못했습니다.
+Server.obj : error LNK2019: "__declspec(dllimport) public: void __cdecl File::setFileSize(int)" (__imp_?setFileSize@File@@QEAAXH@Z) 외부 기호(참조 위치: "unsigned int __cdecl HandleClnt(void *)" (?HandleClnt@@YAIPEAX@Z) 함수)에서 확인하지 못했습니다.
+Server.obj : error LNK2019: "__declspec(dllimport) public: void * __cdecl File::loadFile(char const *)" (__imp_?loadFile@File@@QEAAPEAXPEBD@Z) 외부 기호(참조 위치: "unsigned int __cdecl HandleClnt(void *)" (?HandleClnt@@YAIPEAX@Z) 함수)에서 확인하지 못했습니다.
+Server.obj : error LNK2019: "__declspec(dllimport) public: void * __cdecl File::mappingFile(void)" (__imp_?mappingFile@File@@QEAAPEAXXZ) 외부 기호(참조 위치: "unsigned int __cdecl HandleClnt(void *)" (?HandleClnt@@YAIPEAX@Z) 함수)에서 확인하지 못했습니다.
+include\FileDll1.lib : warning LNK4272: 'x86' 라이브러리 컴퓨터 종류가 'x64' 대상 컴퓨터 종류와 충돌합니다.
+C:\project\Dron_OpenCV_Project\Server\x64\Debug\Server.exe : fatal error LNK1120: 4개의 확인할 수 없는 외부 참조입니다.

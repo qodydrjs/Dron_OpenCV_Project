@@ -1,0 +1,17 @@
+﻿  File.cpp
+c:\project\dron_opencv_project\filedll1\filedll1\file.cpp(6): warning C4273: 'File::getFileName': dll 링크가 일치하지 않습니다.
+  c:\project\dron_opencv_project\filedll1\filedll1\file.h(26): note: 'getFileName'의 이전 정의를 참조하십시오.
+c:\project\dron_opencv_project\filedll1\filedll1\file.cpp(10): warning C4273: 'File::setFileName': dll 링크가 일치하지 않습니다.
+  c:\project\dron_opencv_project\filedll1\filedll1\file.h(27): note: 'setFileName'의 이전 정의를 참조하십시오.
+c:\project\dron_opencv_project\filedll1\filedll1\file.cpp(11): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\project\dron_opencv_project\filedll1\filedll1\file.cpp(14): warning C4273: 'File::getFileSize': dll 링크가 일치하지 않습니다.
+  c:\project\dron_opencv_project\filedll1\filedll1\file.h(29): note: 'getFileSize'의 이전 정의를 참조하십시오.
+c:\project\dron_opencv_project\filedll1\filedll1\file.cpp(18): warning C4273: 'File::setFileSize': dll 링크가 일치하지 않습니다.
+  c:\project\dron_opencv_project\filedll1\filedll1\file.h(30): note: 'setFileSize'의 이전 정의를 참조하십시오.
+c:\project\dron_opencv_project\filedll1\filedll1\file.cpp(22): warning C4273: 'File::loadFile': dll 링크가 일치하지 않습니다.
+  c:\project\dron_opencv_project\filedll1\filedll1\file.h(40): note: 'loadFile'의 이전 정의를 참조하십시오.
+c:\project\dron_opencv_project\filedll1\filedll1\file.cpp(23): error C2664: 'HANDLE CreateFileW(LPCWSTR,DWORD,DWORD,LPSECURITY_ATTRIBUTES,DWORD,DWORD,HANDLE)': 인수 1을(를) 'const char *'에서 'LPCWSTR'(으)로 변환할 수 없습니다.
+  c:\project\dron_opencv_project\filedll1\filedll1\file.cpp(32): note: 가리킨 형식이 관련이 없습니다. 변환하려면 reinterpret_cast, C 스타일 캐스트 또는 함수 스타일 캐스트가 필요합니다.
+c:\project\dron_opencv_project\filedll1\filedll1\file.cpp(41): warning C4273: 'File::mappingFile': dll 링크가 일치하지 않습니다.
+  c:\project\dron_opencv_project\filedll1\filedll1\file.h(41): note: 'mappingFile'의 이전 정의를 참조하십시오.

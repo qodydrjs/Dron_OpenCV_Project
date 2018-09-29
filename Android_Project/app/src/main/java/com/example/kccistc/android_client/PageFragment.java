@@ -33,8 +33,8 @@ public class PageFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
     private int mPageNo;
 
-    private String default_ip = "192.168.1.61";
-    private int default_Port = 5001;
+    private String default_ip = "192.168.99.1";
+    private int default_Port = 5000;
     //Member
     private TextView et;
     private EditText ip, port,et_sendMessage;
