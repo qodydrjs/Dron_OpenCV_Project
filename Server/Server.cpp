@@ -7,7 +7,13 @@
 
 #include "include/File.h"
 #pragma comment(lib,"include/FileDll1.lib")
-
+#include<iostream>
+#include<Windows.h>
+#include <tchar.h> 
+#include<string>
+#include <sqlext.h>
+#include <string.h>
+#include<fstream>
 
 //server
 #define BUF_SIZE 100
@@ -25,6 +31,34 @@ int clntCnt = 0;
 SOCKET clntSocks[MAX_CLNT];
 HANDLE hMutex;
 
+
+
+/////////////sql
+
+
+void geterror(SQLHSTMT hstmt)
+{
+	SQLSMALLINT     HandleType;
+	SQLHANDLE       Handle;
+	SQLSMALLINT     RecNumber;
+	SQLCHAR         SQLState[500] = "SELECT * FROM imageTable3 \WHERE number = (SELECT MAX(number)as number from imageTable3)";
+	SQLINTEGER      NativeErrorPtr;
+	SQLCHAR         MessageText[SQL_MAX_MESSAGE_LENGTH] = "";
+	SQLSMALLINT     BufferLength = 0;
+	SQLSMALLINT     TextLengthPtr;
+
+	SQLSTATE state;
+
+	SQLRETURN retcode;
+
+	int i = 1;
+	while ((retcode = SQLGetDiagRecA(SQL_HANDLE_STMT, hstmt, i,
+		SQLState, &NativeErrorPtr, MessageText, sizeof(MessageText), &TextLengthPtr)) != SQL_NO_DATA)
+	{
+		std::cout << SQLState << std::endl;
+		i++;
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -107,9 +141,84 @@ unsigned WINAPI HandleClnt(void * arg) { //
 		///////////////////////
 		while (true) {
 
+			SQLHENV henv;
+			SQLHDBC hdbc;
+			SQLHSTMT hstmt;
+			SQLRETURN retcode;
+
+			SQLCHAR OutConnStr[255];
+			SQLSMALLINT OutConnStrLen;
+
+			HWND desktopHandle = GetDesktopWindow();   // desktop's window handle
+
+			// Allocate environment handle
+			retcode = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);
+
+			// Set the ODBC version environment attribute
+			if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+				retcode = SQLSetEnvAttr(henv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER*)SQL_OV_ODBC3, 0);
+
+				// Allocate connection handle
+				if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+					retcode = SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc);
+
+					// Set login timeout to 5 seconds
+					if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+						SQLSetConnectAttr(hdbc, SQL_LOGIN_TIMEOUT, (SQLPOINTER)5, 0);
+
+						retcode = SQLConnect(hdbc, (UCHAR*)"mssql", SQL_NTS, (UCHAR*)"sa", SQL_NTS, (UCHAR*)"123qwe", SQL_NTS);
+
+						// Allocate statement handle
+						if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+							retcode = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt);
+
+							SQLINTEGER cbfname = SQL_NTS, cbfdata = SQL_NTS;
+
+							char name[5000] = "";
+							char data[5000] = "";
+
+							retcode = SQLExecDirectA(hstmt, (SQLCHAR*)"SELECT * FROM imageTable3 \WHERE number = (SELECT MAX(number)as number from imageTable3)", SQL_NTS);
+
+							std::ofstream fout;
+							fout.open("C:\\temp\\img02.jpg", std::ios::binary);
+
+							while ((retcode = SQLFetch(hstmt)) != SQL_NO_DATA)
+							{
+								while ((retcode = SQLGetData(hstmt, 1, SQL_C_CHAR, name, sizeof(name), &cbfname) != SQL_NO_DATA))
+								{
+									SQLINTEGER NumBytes = (cbfname > 5000) || (cbfname == SQL_NO_TOTAL) ? 5000 : cbfname;
+								}
+
+								while ((retcode = SQLGetData(hstmt, 2, SQL_C_BINARY, data, sizeof(data), &cbfdata)) != SQL_NO_DATA)
+								{
+									SQLINTEGER NumBytes = (cbfdata > 5000) || (cbfdata == SQL_NO_TOTAL) ? 5000 : cbfdata;
+
+									fout.write(data, 5000);
+								}
+							}
+							fout.close();
+
+							// Process data
+							if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+								SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+							}
+
+							SQLDisconnect(hdbc);
+						}
+
+						SQLFreeHandle(SQL_HANDLE_DBC, hdbc);
+					}
+				}
+				SQLFreeHandle(SQL_HANDLE_ENV, henv);
+			}
+
+
+
+
+
 			try
 			{
-				file.hFile = file.loadFile("C:\\temp\\img01.jpg");
+				file.hFile = file.loadFile("C:\\temp\\img02.jpg");
 				file.setFileSize(GetFileSize(file.hFile, NULL));
 				file.hFileMapping = file.mappingFile();
 				std::cout << "시작 : " << std::endl;
@@ -177,7 +286,7 @@ unsigned WINAPI HandleClnt(void * arg) { //
 				std::cout << "파일전송 완료 : " << std::endl;
 				CloseHandle(file.hFile);
 				CloseHandle(file.hFileMapping);
-				Sleep(5000);
+				Sleep(1000);
 			}
 			catch (const std::exception&)
 			{

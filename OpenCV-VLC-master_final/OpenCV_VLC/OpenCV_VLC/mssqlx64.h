@@ -19,12 +19,13 @@ private:
 	SQLHENV henv = SQL_NULL_HENV;
 	SQLHDBC hdbc1 = SQL_NULL_HDBC;
 	SQLHSTMT hstmt1 = SQL_NULL_HSTMT;
+	RETCODE retcode;
 
 public:
 	mssqlx64();
 	~mssqlx64();
 	void geterror(SQLHSTMT hstmt);
 	void Cleanup();
-	int ImagefileUpload(char* ImageFile, int size);
+	int ImagefileUpload(byte* ImageFile, int size);
 };
 
