@@ -135,22 +135,33 @@ public class PageFragment extends Fragment {
                 public void handleMessage(Message msg) {
                     try {
                         byte[] data = msg.getData().getByteArray("msg");
-                        System.out.println(getContext().getFilesDir());
-                        File file = new File(getContext().getFilesDir(),"bike.bmp");
-                        FileOutputStream outputStream;
-                        try{
-                            outputStream = new FileOutputStream(file);
-                            outputStream.write(data);
-                            outputStream.close();
 
-                        }catch (Exception e){e.printStackTrace();}
-                        Bitmap bitmap = null;
+                        if (new String(data).equals("close")) {
+                            btn_start.setEnabled(!btn_start.isEnabled());
+                        } else {
+                            System.out.println(getContext().getFilesDir());
+                            File file = new File(getContext().getFilesDir(), "bike.bmp");
+                            FileOutputStream outputStream;
+                            try {
+                                outputStream = new FileOutputStream(file);
+                                outputStream.write(data);
+                                outputStream.close();
 
-                        bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                        imageView.setImageBitmap(bitmap);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            Bitmap bitmap = null;
 
-                        //imageView.setImageDrawable("");
-                    }catch (Exception e){e.printStackTrace();}
+                            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                            imageView.setImageBitmap(bitmap);
+                        }
+
+
+                            //imageView.setImageDrawable("");
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+
                     //BitmapFactory.Options opt = new BitmapFactory.Options();
                     //  opt.inDither = true;
                     //opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -179,10 +190,12 @@ public class PageFragment extends Fragment {
                         if (!socket2.equals(null)) {
                             setClientCallback(socket2, getMessageHandler);
                             socket2.connect();
+
                         }
                     }catch (Exception e){
                         try {
                             socket2.disconnect();
+                            btn_start.setEnabled(true);
                         }catch (Exception es){es.printStackTrace();}
                         e.printStackTrace();
                     }
@@ -209,22 +222,39 @@ public class PageFragment extends Fragment {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Message msg = getMessageHandler.obtainMessage();
-                        Bundle b = new Bundle();
-                        b.putByteArray("msg",message);
-                        //b.putByte("msg",message);
-                        msg.setData(b);
+                       // boolean checked = false;
 
-                        //imageView = views.findViewById(R.id.imageView);
-                        try {
-                          //  ByteArrayInputStream ins =null;
-                            //ins.read(message);
+                        if(new String(message).equals("close")){
+                          //  checked = true;
+                            Message msg = getMessageHandler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putByteArray("msg", message);
+                            msg.setData(b);
+                            try {
+                                getMessageHandler.sendMessage(msg);
+                            } catch (Exception e) {
+                            }
 
-                       // Bitmap bitmap = BitmapFactory.decodeStream(ins);
+                        }
+                        else {
+                            Message msg = getMessageHandler.obtainMessage();
+                            Bundle b = new Bundle();
+                            b.putByteArray("msg", message);
+                            //b.putByte("msg",message);
+                            msg.setData(b);
 
-                       // imageView.setImageBitmap(bitmap);
-                        getMessageHandler.sendMessage(msg);
-                        }catch (Exception e){}
+                            //imageView = views.findViewById(R.id.imageView);
+                            try {
+                                //  ByteArrayInputStream ins =null;
+                                //ins.read(message);
+
+                                // Bitmap bitmap = BitmapFactory.decodeStream(ins);
+
+                                // imageView.setImageBitmap(bitmap);
+                                getMessageHandler.sendMessage(msg);
+                            } catch (Exception e) {
+                            }
+                        }
 
                     }
                 }).start();

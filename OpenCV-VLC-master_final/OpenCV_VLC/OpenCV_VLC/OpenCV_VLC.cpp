@@ -34,7 +34,7 @@ struct ctx
 #define VIDEO_WIDTH     400
 #define VIDEO_HEIGHT    300
 
-unsigned WINAPI HandleClnt(void * arg);
+//unsigned WINAPI HandleClnt(void * arg);
 
 ///////////////sql
 //
@@ -93,7 +93,7 @@ String window_name = "Face detection";
 
 Mat frame;
 
-HANDLE hThread;
+//HANDLE hThread;
 
 mssqlx64 mssql;
 
@@ -284,7 +284,7 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 
 				geterror(hstmt1);
 
-				lbytes -= cbBatch;
+				lbytes -= cbBatch; 
 				ptr += cbBatch;
 			}
 			// Put final batch.
@@ -389,30 +389,30 @@ int main()
 
 	return 0;
 }
-
-unsigned WINAPI HandleClnt(void * arg) { // 
-
-	Mat frm = *((Mat*)arg);
-	std::vector<Rect> faces;
-	Mat frame_gray;
-
-	cv::cvtColor(frm, frame_gray, COLOR_BGR2GRAY);
-	equalizeHist(frame_gray, frame_gray);
-
-	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
-
-	for (size_t i = 0; i < faces.size(); i++)
-	{
-		cv::Point lb(faces[i].x + faces[i].width, faces[i].y + faces[i].height);
-		cv::Point tr(faces[i].x, faces[i].y);
-		cv::rectangle(frame_gray, lb, tr, cv::Scalar(0, 255, 0), 3, 4, 0);
-
-		sprintf(buf, "c:/temp/img01.jpg", 0);
-		std::cout << buf << std::endl;
-		imwrite(buf, frame_gray);
-	}
-
-	
-
-	return 0;
-}
+//
+//unsigned WINAPI HandleClnt(void * arg) { // 
+//
+//	Mat frm = *((Mat*)arg);
+//	std::vector<Rect> faces;
+//	Mat frame_gray;
+//
+//	cv::cvtColor(frm, frame_gray, COLOR_BGR2GRAY);
+//	equalizeHist(frame_gray, frame_gray);
+//
+//	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+//
+//	for (size_t i = 0; i < faces.size(); i++)
+//	{
+//		cv::Point lb(faces[i].x + faces[i].width, faces[i].y + faces[i].height);
+//		cv::Point tr(faces[i].x, faces[i].y);
+//		cv::rectangle(frame_gray, lb, tr, cv::Scalar(0, 255, 0), 3, 4, 0);
+//
+//		sprintf(buf, "c:/temp/img01.jpg", 0);
+//		std::cout << buf << std::endl;
+//		imwrite(buf, frame_gray);
+//	}
+//
+//	
+//
+//	return 0;
+//}

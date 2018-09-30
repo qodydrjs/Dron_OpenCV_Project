@@ -18,9 +18,6 @@ public class Client {
     private static int count = 1;
     private static boolean isImage = false;
     private static boolean isSize = false;
-    private static byte[] imagebuffer;
-    private static byte[] sizebuffer;
-    private static byte[] preimagebuffer;
     private static int size = -1;
 
     private Socket socket;
@@ -53,6 +50,11 @@ public class Client {
                 InetSocketAddress socketAddress = new InetSocketAddress(ip, port);
                 try {
                     socket.connect(socketAddress);
+
+                    byte[] a = {'c','l','o','s','e'};
+                    listener.onMessage(a);
+
+
                     socketOutput = socket.getOutputStream();
                    // socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
                     socketInputStream = new BufferedInputStream(socket.getInputStream());
@@ -61,6 +63,9 @@ public class Client {
 
                     if(listener!=null)
                         listener.onConnect(socket);
+
+
+
                 } catch (IOException e) {
                     if(listener!=null)
                         listener.onConnectError(socket, e.getMessage());
@@ -90,17 +95,13 @@ public class Client {
 
     private class ReceiveThread extends Thread implements Runnable{
         public void run(){
-            String message;
-            sizebuffer = new byte[0];
             byte stayBuffer[] = new byte[0];
             byte tempBuffer[] = new byte[0];
             buffer = new byte[buff_size];
             byte buffer_u[] = new byte[0];
-            imagebuffer = null;
             boolean check = false;
             int check_num =-1;
             int read;
-
             byte temp[];
 
             try {
@@ -151,7 +152,6 @@ public class Client {
                                 startNum = 0;
 
                             for (int i = startNum; i < buffer_u.length; i++) {
-
                                 if (buffer_u[i] == 36)//$=36
                                     if (buffer_u.length > i + 3)
                                         if (buffer_u[i + 1] == 100) //d=100
@@ -177,7 +177,6 @@ public class Client {
                         }
 
                         if(check == true){ //데이터가 END 이면 할 처리
-                            //sizebuffer = tempBuffer.clone();
                             if (!isSize) {
                                 stringTokenizer = new StringTokenizer(new String(tempBuffer), "$dd!");
                                 while (stringTokenizer.hasMoreTokens()) {
@@ -188,7 +187,6 @@ public class Client {
                                     } else if (!isSize) {
                                         String str_token = token;
                                         size = Integer.parseInt(str_token);
-                                        imagebuffer = new byte[0];
                                         isSize = true;
                                         check = false;
                                     }
@@ -199,13 +197,9 @@ public class Client {
                                             listener.onMessage(tempBuffer);
                                             isImage = false;
                                             isSize = false;
-                                            imagebuffer = null;
-                                            sizebuffer = null;
-                                            preimagebuffer = null;
                                             check = false;
                                             size = -1;
                                         }
-                                    //buffer = new byte[buff_size];
                                 }
                           //  }
 
@@ -214,8 +208,11 @@ public class Client {
                     }
                 }
             } catch (Exception e) {
-                if(listener!=null)
+                if(listener!=null) {
                     listener.onDisconnect(socket, e.getMessage());
+                    byte[] a = {'c','l','o','s','e'};
+                    listener.onMessage(a);
+                }
                 e.printStackTrace();
                 Log.d("error : ",  "::erroe "+e.getMessage());
             }
@@ -236,7 +233,4 @@ public class Client {
         void onConnectError(Socket socket, String message);
     }
 
-    private void BinarySerch(){
-
-    }
 }

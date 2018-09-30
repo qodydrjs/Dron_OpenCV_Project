@@ -31,8 +31,6 @@ int clntCnt = 0;
 SOCKET clntSocks[MAX_CLNT];
 HANDLE hMutex;
 
-
-
 /////////////sql
 
 
@@ -212,10 +210,6 @@ unsigned WINAPI HandleClnt(void * arg) { //
 				SQLFreeHandle(SQL_HANDLE_ENV, henv);
 			}
 
-
-
-
-
 			try
 			{
 				file.hFile = file.loadFile("C:\\temp\\img02.jpg");
@@ -262,8 +256,7 @@ unsigned WINAPI HandleClnt(void * arg) { //
 						(DWORD)(qwFileOffset & 0xFFFFFFFF),
 						dwBytesInBlock
 					);
-					// 파일전송
-					//SendMsg(file.pbFile, dwBytesInBlock);
+
 					retval = send(hClntSock, file.pbFile, dwBytesInBlock, 0);
 					if (retval != dwBytesInBlock) {
 						while (1) {
@@ -271,8 +264,6 @@ unsigned WINAPI HandleClnt(void * arg) { //
 							if (retval != 0) break;
 						}
 					}
-					//endflag
-					//char buf_end[8] = { '$','^','@'};
 
 					// 뷰를 다 썼으므로, 뷰를 해제한다.
 					UnmapViewOfFile(file.pbFile);
@@ -292,8 +283,6 @@ unsigned WINAPI HandleClnt(void * arg) { //
 			{
 				std::cout << "File IO Error" << std::endl;
 			}
-
-			
 
 		}
 	}

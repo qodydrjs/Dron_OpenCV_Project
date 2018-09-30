@@ -1,11 +1,11 @@
 ﻿  Server.cpp
-c:\project\dron_opencv_project\server\server.cpp(44): warning C4129: 'W': 문자 이스케이프 시퀀스를 인식할 수 없습니다.
-c:\project\dron_opencv_project\server\server.cpp(42): warning C4101: 'Handle' :참조되지 않은 지역 변수입니다.
-c:\project\dron_opencv_project\server\server.cpp(50): warning C4101: 'state' :참조되지 않은 지역 변수입니다.
-c:\project\dron_opencv_project\server\server.cpp(43): warning C4101: 'RecNumber' :참조되지 않은 지역 변수입니다.
-c:\project\dron_opencv_project\server\server.cpp(41): warning C4101: 'HandleType' :참조되지 않은 지역 변수입니다.
-c:\project\dron_opencv_project\server\server.cpp(180): warning C4129: 'W': 문자 이스케이프 시퀀스를 인식할 수 없습니다.
-c:\project\dron_opencv_project\server\server.cpp(254): warning C4244: '=': '__int64'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\project\dron_opencv_project\server\server.cpp(150): warning C4101: 'OutConnStrLen' :참조되지 않은 지역 변수입니다.
-c:\project\dron_opencv_project\server\server.cpp(149): warning C4101: 'OutConnStr' :참조되지 않은 지역 변수입니다.
+c:\project\dron_opencv_project\server\server.cpp(42): warning C4129: 'W': 문자 이스케이프 시퀀스를 인식할 수 없습니다.
+c:\project\dron_opencv_project\server\server.cpp(40): warning C4101: 'Handle' :참조되지 않은 지역 변수입니다.
+c:\project\dron_opencv_project\server\server.cpp(48): warning C4101: 'state' :참조되지 않은 지역 변수입니다.
+c:\project\dron_opencv_project\server\server.cpp(41): warning C4101: 'RecNumber' :참조되지 않은 지역 변수입니다.
+c:\project\dron_opencv_project\server\server.cpp(39): warning C4101: 'HandleType' :참조되지 않은 지역 변수입니다.
+c:\project\dron_opencv_project\server\server.cpp(178): warning C4129: 'W': 문자 이스케이프 시퀀스를 인식할 수 없습니다.
+c:\project\dron_opencv_project\server\server.cpp(248): warning C4244: '=': '__int64'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\project\dron_opencv_project\server\server.cpp(148): warning C4101: 'OutConnStrLen' :참조되지 않은 지역 변수입니다.
+c:\project\dron_opencv_project\server\server.cpp(147): warning C4101: 'OutConnStr' :참조되지 않은 지역 변수입니다.
   Server.vcxproj -> C:\project\Dron_OpenCV_Project\Server\Debug\Server.exe
