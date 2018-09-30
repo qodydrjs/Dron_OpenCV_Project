@@ -15,6 +15,7 @@
 #include "opencv2/imgproc.hpp"
 
 
+
 using namespace cv;
 using namespace std;
 
@@ -86,9 +87,15 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		cv::Point tr(faces[i].x, faces[i].y);
 		cv::rectangle(frame, lb, tr, cv::Scalar(0, 255, 0), 3, 4, 0);
 
-		sprintf(buf, "c:/temp/img01.jpg", 0);
+	/*	sprintf(buf, "c:/temp/img01.jpg", 0);
 		std::cout << buf << std::endl;
-		imwrite(buf, frame);
+		imwrite(buf, frame);*/
+
+		int size = frame.rows*frame.cols;
+		byte *bytes;
+		bytes = (byte*)malloc(size);
+		std::memcpy(bytes, frame.data, size * sizeof(byte));
+		delete bytes;
 		
 
 	}
@@ -98,9 +105,9 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 
 int main()
 {
+	//face_cascade_name = "D:\\OpenCV-VLC-master\\OpenCV_VLC\\OpenCV_VLC\\haarcascade_frontalface_alt.xml";
+		face_cascade_name = "C:\\project\\Dron_OpenCV_Project\\OpenCV-VLC-master_final\\OpenCV_VLC\\OpenCV_VLC\\haarcascade_frontalface_alt.xml";
 
-
-	face_cascade_name = "D:\\OpenCV-VLC-master\\OpenCV_VLC\\OpenCV_VLC\\haarcascade_frontalface_alt.xml";
 	if (!face_cascade.load(face_cascade_name)) { printf("--(!)Error loading face cascade\n"); return -1; };
 
 	// VLC pointers

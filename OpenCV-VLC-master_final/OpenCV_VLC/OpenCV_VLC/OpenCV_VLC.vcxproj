@@ -107,7 +107,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\vlc_sdk\lib;..\..\opencv3.1.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libvlc.lib;opencv_calib3d310d.lib;opencv_core310d.lib;opencv_features2d310d.lib;opencv_flann310d.lib;opencv_highgui310d.lib;opencv_imgcodecs310d.lib;opencv_imgproc310d.lib;opencv_ml310d.lib;opencv_objdetect310d.lib;opencv_photo310d.lib;opencv_shape310d.lib;opencv_stitching310d.lib;opencv_superres310d.lib;opencv_ts310d.lib;opencv_video310d.lib;opencv_videoio310d.lib;opencv_videostab310d.lib</AdditionalDependencies>
+      <AdditionalDependencies>libvlc.lib;opencv_calib3d310d.lib;opencv_core310d.lib;opencv_features2d310d.lib;opencv_flann310d.lib;opencv_highgui310d.lib;opencv_imgcodecs310d.lib;opencv_imgproc310d.lib;opencv_ml310d.lib;opencv_objdetect310d.lib;opencv_photo310d.lib;opencv_shape310d.lib;opencv_stitching310d.lib;opencv_superres310d.lib;opencv_ts310d.lib;opencv_video310d.lib;opencv_videoio310d.lib;opencv_videostab310d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
