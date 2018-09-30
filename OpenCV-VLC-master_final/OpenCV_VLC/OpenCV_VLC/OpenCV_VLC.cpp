@@ -31,8 +31,8 @@ struct ctx
 //#define VIDEO_WIDTH     1920
 //#define VIDEO_HEIGHT    1080
 
-#define VIDEO_WIDTH     300
-#define VIDEO_HEIGHT    200
+#define VIDEO_WIDTH     400
+#define VIDEO_HEIGHT    300
 
 unsigned WINAPI HandleClnt(void * arg);
 

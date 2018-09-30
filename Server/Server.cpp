@@ -286,7 +286,7 @@ unsigned WINAPI HandleClnt(void * arg) { //
 				std::cout << "파일전송 완료 : " << std::endl;
 				CloseHandle(file.hFile);
 				CloseHandle(file.hFileMapping);
-				Sleep(1000);
+				Sleep(500);
 			}
 			catch (const std::exception&)
 			{
