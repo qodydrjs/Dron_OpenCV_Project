@@ -101,16 +101,8 @@ int main(int argc, char *argv[])
 		clntSocks[clntCnt++] = hClntSock;
 		ReleaseMutex(hMutex);
 
-		//hThread = (std::thread)_beginthreadex(NULL, 0, HandleClnt, (void *)&hClntSock, 0, NULL);
 		hThread = (HANDLE)_beginthreadex(NULL, 0, HandleClnt, (void *)&hClntSock, 0, NULL);
 		printf("Connected client IP: %s \n", inet_ntoa(clntAddr.sin_addr));
-
-		//send(hClntSock, message, sizeof(message), 0); //send함수 호출을 통해서 연결된 클라이언트에 데이터를 전송
-
-		//std::thread t1(send_msg1, &hClntSock);
-		//std::thread t2(send_msg, &hClntSock);
-
-		//t1.join();
 	}
 	closesocket(hServSock);
 	WSACleanup(); //프로그램 종료 전에 초기화한 소켓 라이브러리 해제
@@ -135,8 +127,7 @@ unsigned WINAPI HandleClnt(void * arg) { //
 
 			
 		char buf_end[4] = { '$','d','d','!' };
-		////////////////////////
-		///////////////////////
+
 		while (true) {
 
 			SQLHENV henv;

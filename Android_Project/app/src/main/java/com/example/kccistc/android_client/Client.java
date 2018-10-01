@@ -22,11 +22,7 @@ public class Client {
 
     private Socket socket;
     private OutputStream socketOutput;
-   // private BufferedReader socketInput;
     private BufferedInputStream socketInputStream;
-//    private ByteArrayOutputStream socktInputBuffer;
-//    private ByteArrayInputStream socketBytein;
-
     private int buff_size = 1024;
     private byte buffer[] = new byte[buff_size];
     private boolean mRun = true;

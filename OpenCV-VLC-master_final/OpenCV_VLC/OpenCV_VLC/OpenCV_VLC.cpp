@@ -27,17 +27,10 @@ struct ctx
 	HANDLE mutex;
 	uchar*    pixels;
 };
-// define output video resolution
-//#define VIDEO_WIDTH     1920
-//#define VIDEO_HEIGHT    1080
 
 #define VIDEO_WIDTH     400
 #define VIDEO_HEIGHT    300
 
-//unsigned WINAPI HandleClnt(void * arg);
-
-///////////////sql
-//
 #define TEXTSIZE  12000
 #define MAXBUFLEN 256
 
@@ -81,9 +74,6 @@ void Cleanup()
 	if (henv != SQL_NULL_HENV)
 		SQLFreeHandle(SQL_HANDLE_ENV, henv);
 }
-////////////////////
-
-
 
 
 /** Global variables */
@@ -92,8 +82,6 @@ CascadeClassifier face_cascade;
 String window_name = "Face detection";
 
 Mat frame;
-
-//HANDLE hThread;
 
 mssqlx64 mssql;
 
@@ -132,18 +120,7 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 	cv::cvtColor(frame, frame_gray, COLOR_BGR2GRAY);
 	equalizeHist(frame_gray, frame_gray);
 
-	//face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
-
 	boolean checkfalg = false;
-
-	//for (size_t i = 0; i < faces.size(); i++)
-	//{
-	//	cv::Point lb(faces[i].x + faces[i].width, faces[i].y + faces[i].height);
-	//	cv::Point tr(faces[i].x, faces[i].y);
-	//	cv::rectangle(frame, lb, tr, cv::Scalar(0, 255, 0), 3, 4, 0);
-
-	//	checkfalg = true;
-	//}
 
 	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
 
@@ -164,9 +141,7 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		std::cout << buf << std::endl;
 		imwrite(buf, frame);
 
-
-		///////////////////
-
+		//frame.data
 		RETCODE retcode;
 		// SQLBindParameter variables.
 		SQLLEN cbTextSize, lbytes;
@@ -195,7 +170,6 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		{
 			printf("SQLAllocHandle(Env) Failed\n\n");
 			Cleanup();
-			//return(9);
 		}
 
 		// Notify ODBC that this is an ODBC 3.0 app.
@@ -205,7 +179,6 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		{
 			printf("SQLSetEnvAttr(ODBC version) Failed\n\n");
 			Cleanup();
-			//return(9);
 		}
 
 		// Allocate ODBC connection handle and connect.
@@ -214,7 +187,6 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		{
 			printf("SQLAllocHandle(hdbc1) Failed\n\n");
 			Cleanup();
-			//return(9);
 		}
 
 		retcode = SQLConnectW(hdbc1, (SQLWCHAR*)L"mssql", SQL_NTSL, (SQLWCHAR*)L"sa", SQL_NTSL, (SQLWCHAR*)L"123qwe", SQL_NTSL);
@@ -224,7 +196,6 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		{
 			printf("SQLConnect() Failed\n\n");
 			Cleanup();
-			//return(9);
 		}
 
 		// Allocate statement handle.
@@ -233,7 +204,6 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		{
 			printf("SQLAllocHandle(hstmt1) Failed\n\n");
 			Cleanup();
-			//return(9);
 		}
 
 		// Set parameters based on total data to send.
@@ -259,7 +229,6 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		if ((retcode != SQL_SUCCESS) && (retcode != SQL_SUCCESS_WITH_INFO)) {
 			printf("SQLBindParameter Failed\n\n");
 			Cleanup();
-			//return(9);
 		}
 
 		// Execute the command.
@@ -269,10 +238,7 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		{
 			printf("SQLExecDirect Failed\n\n");
 			Cleanup();
-			//return(9);
 		}
-
-		// Check to see if NEED_DATA; if yes, use SQLPutData.
 
 		retcode = SQLParamData(hstmt1, &pParmID);
 
@@ -295,7 +261,6 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		{
 			printf("SQLParamData Failed\n\n");
 			Cleanup();
-			//return(9);
 		}
 
 		// Make final SQLParamData call.
@@ -304,7 +269,6 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		{
 			printf("Final SQLParamData Failed\n\n");
 			Cleanup();
-			//return(9);
 		}
 		checkfalg = false;
 
@@ -313,24 +277,13 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 		SQLDisconnect(hdbc1);
 		SQLFreeHandle(SQL_HANDLE_DBC, hdbc1);
 		SQLFreeHandle(SQL_HANDLE_ENV, henv);
-
-
-		///////////////////
-
-
 		delete[] ptr;
-
 	}
-	//hThread = (HANDLE)_beginthreadex(NULL, 0, HandleClnt, (void *)&frame, 0, NULL);
 	ReleaseMutex(ctx->mutex);
 }
 
 int main()
 {
-	//mssql
-	//mssql.Cleanup();
-
-	//face_cascade_name = "D:\\OpenCV-VLC-master\\OpenCV_VLC\\OpenCV_VLC\\haarcascade_frontalface_alt.xml";
 		face_cascade_name = "C:\\project\\Dron_OpenCV_Project\\OpenCV-VLC-master_final\\OpenCV_VLC\\OpenCV_VLC\\haarcascade_frontalface_alt.xml";
 
 	if (!face_cascade.load(face_cascade_name)) { printf("--(!)Error loading face cascade\n"); return -1; };
@@ -383,36 +336,6 @@ int main()
 		printf("fps:%f\r\n", fps);
 		key = waitKey(100); // wait 100ms for Esc key
 	}
-
 	libvlc_media_player_stop(mp);
-
-
 	return 0;
 }
-//
-//unsigned WINAPI HandleClnt(void * arg) { // 
-//
-//	Mat frm = *((Mat*)arg);
-//	std::vector<Rect> faces;
-//	Mat frame_gray;
-//
-//	cv::cvtColor(frm, frame_gray, COLOR_BGR2GRAY);
-//	equalizeHist(frame_gray, frame_gray);
-//
-//	face_cascade.detectMultiScale(frame_gray, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
-//
-//	for (size_t i = 0; i < faces.size(); i++)
-//	{
-//		cv::Point lb(faces[i].x + faces[i].width, faces[i].y + faces[i].height);
-//		cv::Point tr(faces[i].x, faces[i].y);
-//		cv::rectangle(frame_gray, lb, tr, cv::Scalar(0, 255, 0), 3, 4, 0);
-//
-//		sprintf(buf, "c:/temp/img01.jpg", 0);
-//		std::cout << buf << std::endl;
-//		imwrite(buf, frame_gray);
-//	}
-//
-//	
-//
-//	return 0;
-//}
