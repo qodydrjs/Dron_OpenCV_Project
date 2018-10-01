@@ -232,6 +232,9 @@ public class PageFragment extends Fragment {
                             msg.setData(b);
                             try {
                                 getMessageHandler.sendMessage(msg);
+
+
+
                             } catch (Exception e) {
                             }
 
