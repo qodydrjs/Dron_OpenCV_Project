@@ -30,8 +30,16 @@ struct ctx
 	uchar*    pixels;
 };
 // define output video resolution
-#define VIDEO_WIDTH     1024
-#define VIDEO_HEIGHT    768
+//#define VIDEO_WIDTH     1024
+//#define VIDEO_HEIGHT    768
+
+//
+//#define VIDEO_WIDTH     1280
+//#define VIDEO_HEIGHT    960
+
+#define VIDEO_WIDTH     1920
+#define VIDEO_HEIGHT    1080
+
 //#define VIDEO_WIDTH     800
 //#define VIDEO_HEIGHT    600
 
@@ -123,7 +131,6 @@ void unlock(void *data, void *id, void *const *p_pixels) {
 	/* VLC just rendered the video, but we can also render stuff */
 	// show rendered image
 	imshow("test", *ctx->image);
-	//face_cascade.detectMultiScale(frame_gray, faces, 1.1, 5, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
 	ReleaseMutex(ctx->mutex);
 }
 
@@ -186,7 +193,7 @@ int main()
 		{
 			libvlc_media_player_play(mp);
 		}
-		float fps = libvlc_media_player_get_fps(mp);
+		//float fps = libvlc_media_player_get_fps(mp);
 		//printf("fps:%f\r\n", fps);
 		key = waitKey(100); // wait 100ms for Esc key
 	}
@@ -201,9 +208,8 @@ unsigned WINAPI HandleClnt(void * arg) { //
 
 	while (1)
 	{
-		//cout << "2 cho" << endl;
 		duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-		if (((int)duration == 1))
+		if (((int)duration == 1))   // 1 = 1초마다 영상을 분석함
 		{
 			//checkfalg = true;
 			start = std::clock();
@@ -366,7 +372,7 @@ unsigned WINAPI HandleClnt(void * arg) { //
 					Cleanup();
 					//return(9);
 				}
-				checkfalg = false;
+				//checkfalg = false;
 
 				// Clean up.
 				SQLFreeHandle(SQL_HANDLE_STMT, hstmt1);

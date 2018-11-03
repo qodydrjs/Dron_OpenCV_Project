@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "162081915052",
+    "firebase_url": "https://dronepush-3da82.firebaseio.com",
+    "project_id": "dronepush-3da82",
+    "storage_bucket": "dronepush-3da82.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162081915052:android:e48aa26d10ee1056",
+        "android_client_info": {
+          "package_name": "com.example.kccistc.android_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "162081915052-1m11bmuvtl4nhag3hp06881a28pvijie.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnalRw_Ee-XtZ9neB4_nle2zXayNfX0jE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

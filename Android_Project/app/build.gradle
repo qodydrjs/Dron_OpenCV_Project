@@ -33,4 +33,9 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
+    ////////FCM
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-messaging:17.3.3'
+    implementation 'com.squareup.okhttp3:okhttp:3.2.0'
 }
+apply plugin: 'com.google.gms.google-services'
