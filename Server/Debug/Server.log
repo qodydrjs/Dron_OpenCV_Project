@@ -8,5 +8,4 @@ c:\project\dron_opencv_project\server\server.cpp(220): warning C4129: 'W': 문�
 c:\project\dron_opencv_project\server\server.cpp(289): warning C4244: '=': '__int64'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 c:\project\dron_opencv_project\server\server.cpp(190): warning C4101: 'OutConnStrLen' :참조되지 않은 지역 변수입니다.
 c:\project\dron_opencv_project\server\server.cpp(189): warning C4101: 'OutConnStr' :참조되지 않은 지역 변수입니다.
-  LINK : C:\project\Dron_OpenCV_Project\Server\Debug\Server.exe을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
   Server.vcxproj -> C:\project\Dron_OpenCV_Project\Server\Debug\Server.exe

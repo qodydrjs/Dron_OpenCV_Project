@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	if (bind(hServSock, (SOCKADDR*)&servAddr, sizeof(servAddr)) == SOCKET_ERROR) //소켓에 IP주소와 PORT 번호 할당
 		ErrorHandling("bind() error");
 
-	if (listen(hServSock, 5) == SOCKET_ERROR) //listen 함수호출을 통해서 생성한 소켓을 서버 소켓으로 완성
+	if (listen(hServSock, 3) == SOCKET_ERROR) //listen 함수호출을 통해서 생성한 소켓을 서버 소켓으로 완성
 		ErrorHandling("listen() error");
 
 

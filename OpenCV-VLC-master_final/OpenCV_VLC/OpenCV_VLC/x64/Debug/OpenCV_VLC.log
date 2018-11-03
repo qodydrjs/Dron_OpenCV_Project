@@ -7,8 +7,8 @@ c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\ope
 c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(68): warning C4101: 'state' :참조되지 않은 지역 변수입니다.
 c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(61): warning C4101: 'RecNumber' :참조되지 않은 지역 변수입니다.
 c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(59): warning C4101: 'HandleType' :참조되지 않은 지역 변수입니다.
-c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(235): warning C4474: 'sprintf' : 서식 문자열에 전달된 인수가 너무 많습니다.
-  c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(235): note: 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
-c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(258): warning C4267: '초기화 중': 'size_t'에서 'SDWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(314): warning C4101: 'NumParams2' :참조되지 않은 지역 변수입니다.
+c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(233): warning C4474: 'sprintf' : 서식 문자열에 전달된 인수가 너무 많습니다.
+  c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(233): note: 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
+c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(256): warning C4267: '초기화 중': 'size_t'에서 'SDWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\project\dron_opencv_project\opencv-vlc-master_final\opencv_vlc\opencv_vlc\opencv_vlc.cpp(312): warning C4101: 'NumParams2' :참조되지 않은 지역 변수입니다.
   OpenCV_VLC.vcxproj -> C:\project\Dron_OpenCV_Project\OpenCV-VLC-master_final\OpenCV_VLC\x64\Debug\OpenCV_VLC.exe

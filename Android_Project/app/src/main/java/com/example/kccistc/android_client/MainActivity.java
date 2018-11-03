@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /////topic/news /////// fcm에서 메시지를 보낼떄 news인 topic 에게 메시지를 보낼수있다.
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        FirebaseInstanceId.getInstance().getToken();
         // 뷰페이퍼 셋업
         CustomViewPager viewPager = (CustomViewPager) findViewById(R.id.ViewPager1);
         MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
@@ -80,11 +86,11 @@ public class MainActivity extends AppCompatActivity {
             switch (pos) {
 
                 case 0:
-                    return PageFragment.newInstance(1);
-                case 1:
-                    return PageFragment.newInstance(2);
-                case 2:
-                    return PageFragment.newInstance(3);
+                   return PageFragment.newInstance(1);
+               // case 1:
+              //      return PageFragment.newInstance(2);
+                //case 2:
+                 ///   return PageFragment.newInstance(3);
 
             }
             return null;
@@ -99,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mTabsTitle[position];
         }
+
+
     }
 }
 
