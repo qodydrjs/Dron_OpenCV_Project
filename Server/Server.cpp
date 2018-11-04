@@ -14,6 +14,9 @@
 #include <sqlext.h>
 #include <string.h>
 #include<fstream>
+////timer
+#include <cstdio>
+#include <ctime>
 
 //server
 #define BUF_SIZE 100
@@ -32,9 +35,12 @@ int clntCnt = 0;
 SOCKET clntSocks[MAX_CLNT];
 HANDLE hMutex;
 
+////timer
+std::clock_t start_SendImage, start_Alram;
+double duration_SendImage, duration_Alram;
+
+
 /////////////sql
-
-
 void geterror(SQLHSTMT hstmt)
 {
 	SQLSMALLINT     HandleType;
@@ -91,6 +97,10 @@ int main(int argc, char *argv[])
 
 
 	hThread_Image = (HANDLE)_beginthreadex(NULL, 0, SendImage, NULL, 0, NULL);
+
+	///////////타이머 시작
+	start_SendImage = std::clock();
+	start_Alram = std::clock();
 
 	while (1)
 	{
@@ -176,11 +186,13 @@ unsigned WINAPI SendImage(void *arg)
 	int i;
 	while (true)
 	{
-		if (!(clntCnt <= 0))
+		duration_SendImage = (std::clock() - start_SendImage) / (double)CLOCKS_PER_SEC;
+		if (!(clntCnt <= 0)  && duration_SendImage > 1)
 		{
 			WaitForSingleObject(hMutex, INFINITE);
+			start_SendImage = std::clock();
 			for (i = 0; i < clntCnt; i++) {
-
+				
 				SQLHENV henv;
 				SQLHDBC hdbc;
 				SQLHSTMT hstmt;
@@ -331,7 +343,7 @@ unsigned WINAPI SendImage(void *arg)
 			}
 			ReleaseMutex(hMutex);
 		}
-		Sleep(500);
+		//Sleep(500);
 	}
 
 	return 0;

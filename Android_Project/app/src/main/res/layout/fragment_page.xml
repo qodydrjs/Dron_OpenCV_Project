@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="visible">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
+
+
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/lb_serverIp"
                 android:layout_width="match_parent"
@@ -21,8 +26,8 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/server_ip"
-                 />
+                android:text="@string/server_ip" />
+
             <EditText
                 android:id="@+id/ed_ip"
                 android:layout_width="wrap_content"
@@ -30,13 +35,15 @@
                 android:layout_marginLeft="20dp"
                 android:ems="13"
                 android:hint="IP 를 입력하세요(ex 192.168.1.61)"
-                android:inputType="textPersonName"
-                 />
+                android:inputType="textPersonName" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/lb_serverPort"
                 android:layout_width="match_parent"
@@ -44,8 +51,8 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/server_port"
-              />
+                android:text="@string/server_port" />
+
             <EditText
                 android:id="@+id/ed_port"
                 android:layout_width="wrap_content"
@@ -53,64 +60,78 @@
                 android:layout_marginLeft="20dp"
                 android:ems="12"
                 android:hint="Port 번호를 입력하세요(ex 5000)"
-                android:inputType="textPersonName"
-          />
+                android:inputType="textPersonName" />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/ed_sendMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:ems="13"
+                android:hint="메세지를 입력하세요"
+                android:inputType="textPersonName"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tx_log"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_send"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:text="Send"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/btn_clear"
+                android:layout_width="match_parent"
+                android:layout_height="13dp"
+                android:text="Claer"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_start"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Start"
+                android:visibility="visible" />
         </LinearLayout>
-        <Button
-            android:id="@+id/btn_start"
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Start"
-            />
+            android:layout_weight="0"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btn_clear"
-            android:layout_width="match_parent"
-            android:layout_height="13dp"
-            android:text="Claer"
-            android:visibility="invisible" />
 
-        <Button
-            android:id="@+id/btn_send"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:text="Send"
-            android:visibility="invisible" />
-        <TextView
-            android:id="@+id/tx_log"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="TEST"/>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="312dp"
-            android:scaleType="fitCenter"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_launcher_background" />
 
-
-        <EditText
-            android:id="@+id/ed_sendMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:ems="13"
-            android:hint="메세지를 입력하세요"
-            android:inputType="textPersonName"
-            />
-
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/text_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"/>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

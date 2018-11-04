@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         public final int PAGE_COUNT = 3;
 
-        private final String[] mTabsTitle = {"Recents", "Favorites", "Nearby"};
+        private final String[] mTabsTitle = {"", "", ""};
 
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -87,10 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
                 case 0:
                    return PageFragment.newInstance(1);
-               // case 1:
-              //      return PageFragment.newInstance(2);
-                //case 2:
-                 ///   return PageFragment.newInstance(3);
+                case 1:
+                    return PageFragment.newInstance(2);
+                case 2:
+                    return PageFragment.newInstance(3);
 
             }
             return null;
